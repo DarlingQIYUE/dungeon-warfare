@@ -1,0 +1,30 @@
+# Normalize line endings automatically
+* text=auto
+
+# Unity YAML assets are text (so diffs/merges work)
+*.meta               text
+*.unity              text
+*.asset              text
+*.prefab             text
+*.mat                text
+*.anim               text
+*.controller         text
+*.physicMaterial     text
+*.physicsMaterial2D  text
+*.inputactions       text
+
+# C#
+*.cs   text diff=csharp
+
+# Binary assets (never diffed). If you later add lots of big art/audio,
+# consider Git LFS for these same extensions.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.psd  binary
+*.fbx  binary
+*.wav  binary
+*.mp3  binary
+*.ogg  binary
+*.dll  binary

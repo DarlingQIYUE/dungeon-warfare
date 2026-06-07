@@ -1,0 +1,435 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+
+namespace DungeonWarfare.EditorTools
+{
+    /// <summary>
+    /// One-click generator for a playable 2D tower-defense demo:
+    /// creates placeholder sprites, the Enemy + Tower + Projectile prefabs, and a scene
+    /// wired up with a camera, path, build grid, spawner, tower placer and HUD.
+    ///
+    /// Menu: Tools/Dungeon Warfare/Build Demo Scene
+    /// </summary>
+    public static class DungeonWarfareSceneBuilder
+    {
+        private const string ArtDir = "Assets/Art";
+        // Prefabs live under Resources so the runtime can auto-load them as a
+        // fallback even if the inspector references aren't wired.
+        private const string PrefabDir = "Assets/Resources";
+        private const string SceneDir = "Assets/Scenes";
+        private const string SquarePath = ArtDir + "/WhiteSquare.png";
+        private const string CirclePath = ArtDir + "/WhiteCircle.png";
+        private const string EnemyPrefabPath = PrefabDir + "/Enemy.prefab";
+        private const string TowerPrefabPath = PrefabDir + "/Tower.prefab";
+        private const string ProjectilePrefabPath = PrefabDir + "/Projectile.prefab";
+        private const string TerrainPrefabPath = PrefabDir + "/Terrain.prefab";
+        private const string ScenePath = SceneDir + "/DungeonWarfare.unity";
+
+        // Shared unit size: square side length == circle diameter.
+        // Slightly under one 0.5-unit cell so units sit inside their cell.
+        private const float UnitSize = 0.45f;
+
+        [MenuItem("Tools/Dungeon Warfare/Build Demo Scene")]
+        public static void BuildDemoScene()
+        {
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                return;
+
+            Sprite square = EnsureSquareSprite();
+            Sprite circle = EnsureCircleSprite();
+            Projectile projectilePrefab = EnsureProjectilePrefab(circle);
+            Tower towerPrefab = EnsureTowerPrefab(square, projectilePrefab);
+            Terrain terrainPrefab = EnsureTerrainPrefab(square);
+            Enemy enemyPrefab = EnsureEnemyPrefab(circle, square);
+
+            BuildScene(square, circle, enemyPrefab, towerPrefab, terrainPrefab);
+
+            AssetDatabase.SaveAssets();
+            Debug.Log("[DungeonWarfare] Demo scene built. Press Play -> 开始游戏 -> 第 1 关, then left-click cells to build towers.");
+        }
+
+        // ---------- Sprites ----------
+        // Both base sprites are authored at 1 world unit, so scaling enemy and
+        // tower by the same UnitSize gives "square side == circle diameter".
+
+        private static Sprite EnsureSquareSprite()
+        {
+            EnsureFolder(ArtDir);
+
+            if (!File.Exists(SquarePath))
+            {
+                var tex = new Texture2D(32, 32, TextureFormat.RGBA32, false);
+                var pixels = Enumerable.Repeat((Color32)Color.white, 32 * 32).ToArray();
+                tex.SetPixels32(pixels);
+                tex.Apply();
+                File.WriteAllBytes(SquarePath, tex.EncodeToPNG());
+                Object.DestroyImmediate(tex);
+                AssetDatabase.ImportAsset(SquarePath, ImportAssetOptions.ForceSynchronousImport);
+            }
+
+            // Solid square: point filter keeps edges crisp at any zoom.
+            return ConfigureSpriteImporter(SquarePath, 32f, FilterMode.Point);
+        }
+
+        private static Sprite EnsureCircleSprite()
+        {
+            EnsureFolder(ArtDir);
+
+            if (!File.Exists(CirclePath))
+            {
+                const int size = 256; // high-res so the range disc stays smooth when scaled up
+                const float radius = size / 2f;
+                var center = new Vector2(radius, radius);
+                var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+                var pixels = new Color32[size * size];
+                for (int y = 0; y < size; y++)
+                {
+                    for (int x = 0; x < size; x++)
+                    {
+                        float dist = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), center);
+                        float alpha = Mathf.Clamp01(radius - dist); // 1px soft edge
+                        pixels[y * size + x] = new Color32(255, 255, 255, (byte)(alpha * 255));
+                    }
+                }
+                tex.SetPixels32(pixels);
+                tex.Apply();
+                File.WriteAllBytes(CirclePath, tex.EncodeToPNG());
+                Object.DestroyImmediate(tex);
+                AssetDatabase.ImportAsset(CirclePath, ImportAssetOptions.ForceSynchronousImport);
+            }
+
+            // Soft-edged circle: bilinear + high res => smooth even when enlarged.
+            return ConfigureSpriteImporter(CirclePath, 256f, FilterMode.Bilinear);
+        }
+
+        private static Sprite ConfigureSpriteImporter(string path, float pixelsPerUnit, FilterMode filter)
+        {
+            var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.spritePixelsPerUnit = pixelsPerUnit; // full texture => 1 world unit
+            importer.filterMode = filter;
+            importer.textureCompression = TextureImporterCompression.Uncompressed; // no compression blur
+            importer.mipmapEnabled = false;
+            importer.SaveAndReimport();
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        }
+
+        // ---------- Prefabs ----------
+
+        private static Enemy EnsureEnemyPrefab(Sprite circle, Sprite square)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("Enemy");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = circle;
+            sr.color = new Color(0.85f, 0.25f, 0.25f);
+            sr.sortingOrder = 2;
+
+            // Kinematic body + trigger collider so towers can target it via
+            // overlap queries, without physically shoving anything.
+            var body = go.AddComponent<Rigidbody2D>();
+            body.bodyType = RigidbodyType2D.Kinematic;
+            body.gravityScale = 0f;
+
+            // Circle enemy => circle collider; radius 0.5 (local) matches the
+            // 1-unit sprite, so its diameter equals the tower's side length.
+            var col = go.AddComponent<CircleCollider2D>();
+            col.radius = 0.5f;
+            col.isTrigger = true;
+
+            go.AddComponent<Health>().Configure(30f);
+            go.AddComponent<PathFollower>();
+            Enemy enemy = go.AddComponent<Enemy>();
+
+            // Health bar (appears only after first damage); uses the square sprite.
+            EnemyHealthBar bar = go.AddComponent<EnemyHealthBar>();
+            SetRef(bar, "barSprite", square);
+
+            Enemy asset = PrefabUtility.SaveAsPrefabAsset(go, EnemyPrefabPath).GetComponent<Enemy>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Projectile EnsureProjectilePrefab(Sprite circle)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("Projectile");
+            go.transform.localScale = new Vector3(0.18f, 0.18f, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = circle;
+            sr.color = new Color(1f, 0.95f, 0.4f);
+            sr.sortingOrder = 4;
+
+            go.AddComponent<Projectile>();
+
+            Projectile asset = PrefabUtility.SaveAsPrefabAsset(go, ProjectilePrefabPath).GetComponent<Projectile>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Tower EnsureTowerPrefab(Sprite square, Projectile projectilePrefab)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("Tower");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.30f, 0.70f, 0.85f);
+            sr.sortingOrder = 3;
+
+            // Trigger collider (~1 cell) only so the mouse can hover-pick the
+            // tower for its range display; it doesn't affect combat or movement.
+            var hitbox = go.AddComponent<BoxCollider2D>();
+            hitbox.size = new Vector2(1.1f, 1.1f);
+            hitbox.isTrigger = true;
+
+            Tower tower = go.AddComponent<Tower>();
+            SetRef(tower, "projectilePrefab", projectilePrefab);
+
+            Tower asset = PrefabUtility.SaveAsPrefabAsset(go, TowerPrefabPath).GetComponent<Tower>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Terrain EnsureTerrainPrefab(Sprite square)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("Terrain");
+            // Fills its road cell (cell = 0.5 units); a tower can sit on top.
+            go.transform.localScale = new Vector3(0.5f, 0.5f, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.5f, 0.46f, 0.38f); // earth/stone
+            sr.sortingOrder = 1; // above tiles, below towers/enemies
+
+            go.AddComponent<Terrain>();
+
+            Terrain asset = PrefabUtility.SaveAsPrefabAsset(go, TerrainPrefabPath).GetComponent<Terrain>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        // ---------- Scene ----------
+
+        private static void BuildScene(Sprite square, Sprite circle, Enemy enemyPrefab,
+                                       Tower towerPrefab, Terrain terrainPrefab)
+        {
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+
+            // Whole-map grid, sized and shaped from the ASCII MapRows below.
+            var gridGo = new GameObject("Grid");
+            GridSystem grid = gridGo.AddComponent<GridSystem>();
+            SetRef(grid, "tileSprite", square);
+
+            int columns = MapRows[0].Length;
+            int rows = MapRows.Length;
+            float cellSize = grid.CellSize; // 0.5
+            SetInt(grid, "columns", columns);
+            SetInt(grid, "rows", rows);
+            SetVector2(grid, "origin", new Vector2(-columns * cellSize / 2f, -rows * cellSize / 2f));
+
+            Vector2Int[] pathCells = ParseMap(out Vector2Int entryCell, out Vector2Int exitCell);
+            SetVector2IntArray(grid, "pathCells", pathCells);
+            SetVector2Int(grid, "entryCell", entryCell);
+            SetVector2Int(grid, "exitCell", exitCell);
+
+            // World camera (orthographic 2D): exactly frames the grid height.
+            // Its viewport is the left 14:9 region.
+            var camGo = new GameObject("Main Camera");
+            camGo.tag = "MainCamera";
+            var cam = camGo.AddComponent<Camera>();
+            cam.orthographic = true;
+            cam.orthographicSize = rows * cellSize / 2f;
+            cam.backgroundColor = new Color(0.13f, 0.14f, 0.18f);
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            camGo.transform.position = new Vector3(0f, 0f, -10f);
+
+            // Sidebar camera: renders nothing, just fills the right 2/16 with a
+            // solid panel color (Red Alert style command bar, empty for now).
+            var sidebarGo = new GameObject("Sidebar Camera");
+            var sidebarCam = sidebarGo.AddComponent<Camera>();
+            sidebarCam.orthographic = true;
+            sidebarCam.cullingMask = 0; // draw no world objects
+            sidebarCam.clearFlags = CameraClearFlags.SolidColor;
+            sidebarCam.backgroundColor = new Color(0.10f, 0.11f, 0.14f);
+            sidebarCam.depth = 1;
+            sidebarGo.transform.position = new Vector3(100f, 100f, -10f); // out of the way
+
+            // Layout: lock 16:9 and split into play (left 14) + sidebar (right 2)
+            var layout = camGo.AddComponent<GameViewportLayout>();
+            SetRef(layout, "worldCamera", cam);
+            SetRef(layout, "sidebarCamera", sidebarCam);
+
+            // Systems root
+            var systems = new GameObject("Systems");
+            GameManager game = systems.AddComponent<GameManager>();
+            WaveManager waves = systems.AddComponent<WaveManager>();
+            GridPlacer placer = systems.AddComponent<GridPlacer>();
+            GameFlow flow = systems.AddComponent<GameFlow>();
+            GameUI ui = systems.AddComponent<GameUI>();
+
+            // Wire serialized references (enemies route via the grid directly)
+            SetRef(waves, "enemyPrefab", enemyPrefab);
+            SetRef(waves, "grid", grid);
+            SetRef(waves, "game", game);
+
+            SetRef(placer, "towerPrefab", towerPrefab);
+            SetRef(placer, "terrainPrefab", terrainPrefab);
+            SetRef(placer, "grid", grid);
+            SetRef(placer, "cam", cam);
+            SetRef(placer, "game", game);
+            SetRef(placer, "ghostSprite", square);
+            SetRef(placer, "rangeSprite", circle);
+
+            SetRef(flow, "game", game);
+            SetRef(flow, "waves", waves);
+            SetRef(flow, "grid", grid);
+
+            SetRef(ui, "flow", flow);
+            SetRef(ui, "game", game);
+            SetRef(ui, "waves", waves);
+            SetRef(ui, "placer", placer);
+            SetRef(ui, "sidebarCamera", sidebarCam);
+
+            EnsureFolder(SceneDir);
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene, ScenePath);
+            AddSceneToBuildSettings(ScenePath);
+        }
+
+        // ---------- Map ----------
+        // Edit this ASCII map to reshape the level. Top line = top row.
+        //   '#' = road (enemies walk)   '.' = buildable ground
+        //   'E' = entry (road)          'X' = exit (road)
+        // The enemy route is found automatically (BFS) over the road cells.
+        private static readonly string[] MapRows =
+        {
+            "............................",
+            "E##########################.",
+            "......................######",
+            "........................####",
+            "........................####",
+            "......................###..#",
+            "....................###....#",
+            "................#####......#",
+            "...............##...#......#",
+            "############################",
+            "#....#......................",
+            "#...##......................",
+            "#...#.......................",
+            "#..###......................",
+            "#.##.##.....................",
+            "###...###...................",
+            "#.......##..................",
+            "###########################X",
+        };
+
+        /// <summary>Parse <see cref="MapRows"/> into road cells + entry/exit.</summary>
+        private static Vector2Int[] ParseMap(out Vector2Int entry, out Vector2Int exit)
+        {
+            int rows = MapRows.Length;
+            int cols = MapRows[0].Length;
+            var road = new List<Vector2Int>();
+            entry = Vector2Int.zero;
+            exit = Vector2Int.zero;
+
+            for (int r = 0; r < rows; r++)
+            {
+                string line = MapRows[r];
+                int gridRow = (rows - 1) - r; // first line is the top row
+                for (int c = 0; c < cols && c < line.Length; c++)
+                {
+                    char ch = line[c];
+                    if (ch == '.') continue; // buildable, not road
+
+                    var cell = new Vector2Int(c, gridRow);
+                    road.Add(cell);
+                    if (ch == 'E') entry = cell;
+                    else if (ch == 'X') exit = cell;
+                }
+            }
+            return road.ToArray();
+        }
+
+        // ---------- Helpers ----------
+
+        private static void EnsureFolder(string path)
+        {
+            if (AssetDatabase.IsValidFolder(path)) return;
+            string parent = Path.GetDirectoryName(path).Replace('\\', '/');
+            string leaf = Path.GetFileName(path);
+            if (!AssetDatabase.IsValidFolder(parent)) EnsureFolder(parent);
+            AssetDatabase.CreateFolder(parent, leaf);
+        }
+
+        private static void SetRef(Object target, string field, Object value)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(field);
+            if (prop == null) { Debug.LogError($"[DungeonWarfare] Missing field '{field}' on {target}"); return; }
+            prop.objectReferenceValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetInt(Object target, string field, int value)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(field);
+            if (prop == null) { Debug.LogError($"[DungeonWarfare] Missing field '{field}' on {target}"); return; }
+            prop.intValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetVector2(Object target, string field, Vector2 value)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(field);
+            if (prop == null) { Debug.LogError($"[DungeonWarfare] Missing field '{field}' on {target}"); return; }
+            prop.vector2Value = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetVector2Int(Object target, string field, Vector2Int value)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(field);
+            if (prop == null) { Debug.LogError($"[DungeonWarfare] Missing field '{field}' on {target}"); return; }
+            prop.vector2IntValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetVector2IntArray(Object target, string field, Vector2Int[] values)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(field);
+            if (prop == null) { Debug.LogError($"[DungeonWarfare] Missing array '{field}' on {target}"); return; }
+            prop.arraySize = values.Length;
+            for (int i = 0; i < values.Length; i++)
+                prop.GetArrayElementAtIndex(i).vector2IntValue = values[i];
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void AddSceneToBuildSettings(string path)
+        {
+            // Put the game scene FIRST (build index 0) so the exe boots into it,
+            // not into a leftover SampleScene. Keep any other scenes after it.
+            var scenes = EditorBuildSettings.scenes.Where(s => s.path != path).ToList();
+            scenes.Insert(0, new EditorBuildSettingsScene(path, true));
+            EditorBuildSettings.scenes = scenes.ToArray();
+        }
+    }
+}
