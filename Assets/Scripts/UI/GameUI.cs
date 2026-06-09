@@ -67,6 +67,10 @@ namespace DungeonWarfare
 
             Time.timeScale = (paused || menuOpen) ? 0f : 1f;
 
+            // The ESC menu hard-blocks board interaction; the space time-stop does
+            // not. Publish that via GameFlow so the placer can tell them apart.
+            if (flow != null) flow.ModalMenuOpen = menuOpen;
+
             if (waveBannerTimer > 0f) waveBannerTimer -= Time.unscaledDeltaTime;
         }
 
@@ -224,11 +228,12 @@ namespace DungeonWarfare
 
         private void DrawPauseOverlay()
         {
-            DrawDim();
-            var area = Centered(420, 110);
-            banner.normal.textColor = Color.white;
-            GUI.Label(new Rect(area.x, area.y, area.width, 64f), "暂停 PAUSED", banner);
-            GUI.Label(new Rect(area.x, area.y + 66f, area.width, 28f), "按 空格 继续", hint);
+            // Time-stop: the world is frozen but building/selling stays available,
+            // so we don't dim the board — just show an indicator near the top.
+            var area = new Rect(PlayAreaCenterX() - 240f, Screen.height * 0.05f, 480f, 80f);
+            banner.normal.textColor = new Color(0.6f, 0.85f, 1f);
+            GUI.Label(new Rect(area.x, area.y, area.width, 52f), "时停 TIME-STOP", banner);
+            GUI.Label(new Rect(area.x, area.y + 54f, area.width, 24f), "可建造 / 拆除 · 空格继续", hint);
         }
 
         private float PlayAreaCenterX()

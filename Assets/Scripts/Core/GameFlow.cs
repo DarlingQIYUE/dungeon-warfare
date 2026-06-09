@@ -22,6 +22,11 @@ namespace DungeonWarfare
         public bool IsPlaying => State == GameState.Playing;
         public event Action<GameState> StateChanged;
 
+        /// <summary>True while the ESC pause menu (a blocking modal) is open. The
+        /// space "time-stop" leaves this false, so the placer still allows building
+        /// and selling while the world is frozen.</summary>
+        public bool ModalMenuOpen { get; set; }
+
         private void Awake()
         {
             Instance = this;

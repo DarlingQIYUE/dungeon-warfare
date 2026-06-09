@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &526300112
+--- !u!1 &9129325
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,153 +127,27 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 526300118}
-  - component: {fileID: 526300117}
-  - component: {fileID: 526300116}
-  - component: {fileID: 526300115}
-  - component: {fileID: 526300114}
-  - component: {fileID: 526300113}
+  - component: {fileID: 9129328}
+  - component: {fileID: 9129326}
+  - component: {fileID: 9129327}
   m_Layer: 0
-  m_Name: Systems
-  m_TagString: Untagged
+  m_Name: Main Camera
+  m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &526300113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526300112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94b486c8dea08c249a66efc87c0f5bfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameUI
-  flow: {fileID: 526300114}
-  game: {fileID: 526300117}
-  waves: {fileID: 526300116}
-  placer: {fileID: 526300115}
-  sidebarCamera: {fileID: 985668722}
---- !u!114 &526300114
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526300112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ade392bfa13d884caad61791becdaf9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameFlow
-  game: {fileID: 526300117}
-  waves: {fileID: 526300116}
-  grid: {fileID: 1100730544}
---- !u!114 &526300115
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526300112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45b41ca9b14a5ef4c8fe4c1e79f9b27c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GridPlacer
-  towerPrefab: {fileID: 0}
-  terrainPrefab: {fileID: 0}
-  grid: {fileID: 1100730544}
-  cam: {fileID: 1741157949}
-  game: {fileID: 526300117}
-  ghostSprite: {fileID: 21300000, guid: bd3e5ed04acf348489a34833115044cb, type: 3}
-  okColor: {r: 0.3, g: 1, b: 0.3, a: 0.45}
-  badColor: {r: 1, g: 0.3, b: 0.3, a: 0.45}
-  rangeSprite: {fileID: 21300000, guid: fe299d18606626242b2876180a7ba47b, type: 3}
-  rangeColor: {r: 1, g: 1, b: 0.4, a: 0.13}
-  refundRate: 0.6
---- !u!114 &526300116
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526300112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd583ad1d20a59c4890dd6747f80943d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.WaveManager
-  enemyPrefab: {fileID: 0}
-  grid: {fileID: 1100730544}
-  game: {fileID: 526300117}
-  totalWaves: 8
-  enemiesPerWave: 10
-  baseHealth: 30
-  healthGrowth: 1.5
-  spawnInterval: 0.8
-  startDelay: 1
-  betweenWaveDelay: 2.5
---- !u!114 &526300117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526300112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e10156c8ac204674bb3cf5d530f3a4f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameManager
-  startingGold: 100
-  startingLives: 20
---- !u!4 &526300118
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526300112}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &985668721
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 985668723}
-  - component: {fileID: 985668722}
-  m_Layer: 0
-  m_Name: Sidebar Camera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!20 &985668722
+--- !u!20 &9129326
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 985668721}
+  m_GameObject: {fileID: 9129325}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.1, g: 0.11, b: 0.14, a: 1}
+  m_BackGroundColor: {r: 0.13, g: 0.14, b: 0.18, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -298,11 +172,11 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
-  m_Depth: 1
+  orthographic size: 4.5
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -314,22 +188,39 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!4 &985668723
+--- !u!114 &9129327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9129325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87da661b589c6f14bb5a61db59e17f5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameViewportLayout
+  worldCamera: {fileID: 9129326}
+  sidebarCamera: {fileID: 1968905242}
+  aspectWidth: 16
+  aspectHeight: 9
+  sidebarUnits: 2
+--- !u!4 &9129328
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 985668721}
+  m_GameObject: {fileID: 9129325}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 100, y: 100, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1100730543
+--- !u!1 &750166760
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -337,8 +228,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1100730545}
-  - component: {fileID: 1100730544}
+  - component: {fileID: 750166762}
+  - component: {fileID: 750166761}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -346,13 +237,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1100730544
+--- !u!114 &750166761
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100730543}
+  m_GameObject: {fileID: 750166760}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 579bb819fc2e0dd42a4b13db6d1547c8, type: 3}
@@ -508,13 +399,13 @@ MonoBehaviour:
   tileSprite: {fileID: 21300000, guid: bd3e5ed04acf348489a34833115044cb, type: 3}
   buildableColor: {r: 0.4, g: 0.6, b: 0.9, a: 0.14}
   pathColor: {r: 0.45, g: 0.36, b: 0.26, a: 0.85}
---- !u!4 &1100730545
+--- !u!4 &750166762
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100730543}
+  m_GameObject: {fileID: 750166760}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -523,7 +414,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1741157948
+--- !u!1 &1854512810
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -531,27 +422,153 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1741157951}
-  - component: {fileID: 1741157949}
-  - component: {fileID: 1741157950}
+  - component: {fileID: 1854512816}
+  - component: {fileID: 1854512815}
+  - component: {fileID: 1854512814}
+  - component: {fileID: 1854512813}
+  - component: {fileID: 1854512812}
+  - component: {fileID: 1854512811}
   m_Layer: 0
-  m_Name: Main Camera
-  m_TagString: MainCamera
+  m_Name: Systems
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!20 &1741157949
+--- !u!114 &1854512811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854512810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94b486c8dea08c249a66efc87c0f5bfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameUI
+  flow: {fileID: 1854512812}
+  game: {fileID: 1854512815}
+  waves: {fileID: 1854512814}
+  placer: {fileID: 1854512813}
+  sidebarCamera: {fileID: 1968905242}
+--- !u!114 &1854512812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854512810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ade392bfa13d884caad61791becdaf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameFlow
+  game: {fileID: 1854512815}
+  waves: {fileID: 1854512814}
+  grid: {fileID: 750166761}
+--- !u!114 &1854512813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854512810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45b41ca9b14a5ef4c8fe4c1e79f9b27c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GridPlacer
+  towerPrefab: {fileID: 0}
+  terrainPrefab: {fileID: 0}
+  grid: {fileID: 750166761}
+  cam: {fileID: 9129326}
+  game: {fileID: 1854512815}
+  ghostSprite: {fileID: 21300000, guid: bd3e5ed04acf348489a34833115044cb, type: 3}
+  okColor: {r: 0.3, g: 1, b: 0.3, a: 0.45}
+  badColor: {r: 1, g: 0.3, b: 0.3, a: 0.45}
+  rangeSprite: {fileID: 21300000, guid: fe299d18606626242b2876180a7ba47b, type: 3}
+  rangeColor: {r: 1, g: 1, b: 0.4, a: 0.13}
+  refundRate: 0.6
+--- !u!114 &1854512814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854512810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd583ad1d20a59c4890dd6747f80943d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.WaveManager
+  enemyPrefab: {fileID: 0}
+  grid: {fileID: 750166761}
+  game: {fileID: 1854512815}
+  totalWaves: 8
+  enemiesPerWave: 10
+  baseHealth: 30
+  healthGrowth: 1.5
+  spawnInterval: 0.8
+  startDelay: 1
+  betweenWaveDelay: 2.5
+--- !u!114 &1854512815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854512810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e10156c8ac204674bb3cf5d530f3a4f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameManager
+  startingGold: 100
+  startingLives: 20
+--- !u!4 &1854512816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854512810}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1968905241
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1968905243}
+  - component: {fileID: 1968905242}
+  m_Layer: 0
+  m_Name: Sidebar Camera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!20 &1968905242
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1741157948}
+  m_GameObject: {fileID: 1968905241}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.13, g: 0.14, b: 0.18, a: 1}
+  m_BackGroundColor: {r: 0.1, g: 0.11, b: 0.14, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -576,11 +593,11 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4.5
-  m_Depth: 0
+  orthographic size: 5
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -592,33 +609,16 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &1741157950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1741157948}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87da661b589c6f14bb5a61db59e17f5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameViewportLayout
-  worldCamera: {fileID: 1741157949}
-  sidebarCamera: {fileID: 985668722}
-  aspectWidth: 16
-  aspectHeight: 9
-  sidebarUnits: 2
---- !u!4 &1741157951
+--- !u!4 &1968905243
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1741157948}
+  m_GameObject: {fileID: 1968905241}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 100, y: 100, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -628,7 +628,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1100730545}
-  - {fileID: 1741157951}
-  - {fileID: 985668723}
-  - {fileID: 526300118}
+  - {fileID: 750166762}
+  - {fileID: 9129328}
+  - {fileID: 1968905243}
+  - {fileID: 1854512816}

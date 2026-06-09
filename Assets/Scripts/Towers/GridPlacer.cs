@@ -126,7 +126,16 @@ namespace DungeonWarfare
         private void Update()
         {
             if (grid == null || cam == null || Mouse.current == null) return;
-            if (Time.timeScale == 0f) return; // paused
+
+            // The ESC pause menu hard-blocks interaction. The space "time-stop"
+            // freezes the world (timeScale 0) but still lets the player build/sell,
+            // so we deliberately do NOT bail just because time is stopped.
+            if (GameFlow.Instance != null && GameFlow.Instance.ModalMenuOpen)
+            {
+                if (ghost != null) ghost.enabled = false;
+                HideRange();
+                return;
+            }
 
             bool playing = GameFlow.Instance == null || GameFlow.Instance.IsPlaying;
             if (!playing)
