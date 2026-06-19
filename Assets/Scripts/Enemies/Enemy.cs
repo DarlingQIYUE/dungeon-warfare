@@ -26,6 +26,9 @@ namespace DungeonWarfare
         public Vector2Int CurrentCell => follower.CurrentCell;
         public Vector2Int TargetCell => follower.TargetCell;
 
+        /// <summary>Remaining route distance to the exit (smaller = closer to leaking).</summary>
+        public float DistanceToExit => follower != null ? follower.DistanceToExit() : float.MaxValue;
+
         private void Awake()
         {
             health = GetComponent<Health>();

@@ -36,6 +36,24 @@ namespace DungeonWarfare
         /// <summary>The cell the enemy is physically over right now.</summary>
         public Vector2Int CurrentCell => grid != null ? grid.WorldToCell(transform.position) : default;
 
+        /// <summary>
+        /// Remaining travel distance along the route to the exit. Towers use this to
+        /// target the enemy nearest to leaking, not the one nearest to the tower.
+        /// </summary>
+        public float DistanceToExit()
+        {
+            if (grid == null || path.Count == 0) return float.MaxValue;
+            if (path.Count == 1) return Vector3.Distance(transform.position, path[0]);
+
+            int s = Mathf.Clamp(seg, 0, path.Count - 2);
+            DistanceToSegment(transform.position, path[s], path[s + 1], out float t);
+            Vector3 proj = Vector3.Lerp(path[s], path[s + 1], t);
+
+            float d = Vector3.Distance(proj, path[s + 1]);
+            for (int i = s + 1; i < path.Count - 1; i++) d += Vector3.Distance(path[i], path[i + 1]);
+            return d;
+        }
+
         /// <summary>The cell the enemy is about to walk into (roughly one cell ahead on
         /// the route). Waypoints are sparse after straightening, so this is sampled by
         /// distance rather than read off the next waypoint.</summary>

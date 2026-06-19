@@ -3,8 +3,9 @@ using UnityEngine;
 namespace DungeonWarfare
 {
     /// <summary>
-    /// A grid-placed tower. Periodically finds the nearest enemy within range
-    /// and fires a projectile at it. Carries a gold cost used by the placer.
+    /// A grid-placed tower. Periodically targets the enemy within range that is
+    /// closest to the exit (so the one about to leak is shot first) and fires a
+    /// projectile at it. Carries a gold cost used by the placer.
     /// </summary>
     public class Tower : MonoBehaviour
     {
@@ -33,28 +34,29 @@ namespace DungeonWarfare
             cooldown -= Time.deltaTime;
             if (cooldown > 0f) return;
 
-            Health target = FindNearestEnemy();
+            Health target = FindTarget();
             if (target == null) return;
 
             cooldown = fireInterval;
             Fire(target);
         }
 
-        private Health FindNearestEnemy()
+        /// <summary>The in-range enemy closest to the exit (least route distance left).</summary>
+        private Health FindTarget()
         {
             Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, range);
             Health best = null;
-            float bestSqr = float.MaxValue;
+            float bestDist = float.MaxValue;
 
             foreach (Collider2D col in cols)
             {
-                if (!col.TryGetComponent(out Enemy _)) continue;
+                if (!col.TryGetComponent(out Enemy enemy)) continue;
                 if (!col.TryGetComponent(out Health health) || health.IsDead) continue;
 
-                float sqr = (health.transform.position - transform.position).sqrMagnitude;
-                if (sqr < bestSqr)
+                float dist = enemy.DistanceToExit;
+                if (dist < bestDist)
                 {
-                    bestSqr = sqr;
+                    bestDist = dist;
                     best = health;
                 }
             }
