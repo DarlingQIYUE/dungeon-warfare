@@ -23,6 +23,8 @@ namespace DungeonWarfare
         private bool menuOpen;   // esc pause menu
         private float waveBannerTimer;
         private int bannerWave;
+        private float bonusToastTimer;
+        private int bonusToastAmount;
 
         private void Awake()
         {
@@ -35,13 +37,27 @@ namespace DungeonWarfare
         private void OnEnable()
         {
             if (waves == null) waves = FindFirstObjectByType<WaveManager>();
-            if (waves != null) waves.WaveChanged += OnWaveChanged;
+            if (waves != null)
+            {
+                waves.WaveChanged += OnWaveChanged;
+                waves.EarlyStartRewarded += OnEarlyStartRewarded;
+            }
         }
 
         private void OnDisable()
         {
-            if (waves != null) waves.WaveChanged -= OnWaveChanged;
+            if (waves != null)
+            {
+                waves.WaveChanged -= OnWaveChanged;
+                waves.EarlyStartRewarded -= OnEarlyStartRewarded;
+            }
             Time.timeScale = 1f; // never leave the game frozen
+        }
+
+        private void OnEarlyStartRewarded(int gold)
+        {
+            bonusToastAmount = gold;
+            bonusToastTimer = 2f;
         }
 
         private void OnWaveChanged()
@@ -72,6 +88,7 @@ namespace DungeonWarfare
             if (flow != null) flow.ModalMenuOpen = menuOpen;
 
             if (waveBannerTimer > 0f) waveBannerTimer -= Time.unscaledDeltaTime;
+            if (bonusToastTimer > 0f) bonusToastTimer -= Time.unscaledDeltaTime;
         }
 
         private void OnGUI()
@@ -92,6 +109,8 @@ namespace DungeonWarfare
                     break;
                 case GameState.Playing:
                     DrawSidebar();
+                    DrawWavePrompt();
+                    DrawBonusToast();
                     DrawWaveBanner();
                     if (menuOpen) DrawPauseMenu();
                     else if (paused) DrawPauseOverlay();
@@ -166,6 +185,8 @@ namespace DungeonWarfare
                 GUI.Label(new Rect(x, y, w, 32), $"{waves.CurrentWave} / {waves.TotalWaves}", sideValue); y += 36f;
                 GUI.Label(new Rect(x, y, w, 20), "剩余敌人", sideHeader); y += 22f;
                 GUI.Label(new Rect(x, y, w, 30), $"{waves.AliveCount}", sideValue); y += 42f;
+
+                if (flow.State == GameState.Playing) DrawWaveControl(x, ref y, w);
             }
 
             // Build menu (only while actively playing)
@@ -176,6 +197,31 @@ namespace DungeonWarfare
             // is outside the grid and won't fight the placer's click handling).
             if (flow.State == GameState.Playing && placer != null && placer.HasSelection && !placer.IsPlacing)
                 DrawRemoveSection(x, ref y, w);
+        }
+
+        // Start the first wave, or count down to / early-start the next one.
+        private void DrawWaveControl(float x, ref float y, float w)
+        {
+            if (waves == null) return;
+            Color prev = GUI.backgroundColor;
+
+            if (waves.AwaitingStart)
+            {
+                GUI.backgroundColor = new Color(0.35f, 0.75f, 0.4f);
+                if (GUI.Button(new Rect(x, y, w, 46), "▶ 开始", buildButton)) waves.RequestNextWave();
+                y += 52f;
+            }
+            else if (waves.CountingDown)
+            {
+                GUI.Label(new Rect(x, y, w, 20), "下一波", sideHeader); y += 22f;
+                GUI.Label(new Rect(x, y, w, 30), $"{waves.Countdown:0.0}s", sideValue); y += 34f;
+                GUI.backgroundColor = new Color(0.45f, 0.62f, 0.78f);
+                if (GUI.Button(new Rect(x, y, w, 44), $"提前开始\n+{waves.EarlyStartBonus} 金", buildButton))
+                    waves.RequestNextWave();
+                y += 50f;
+            }
+
+            GUI.backgroundColor = prev;
         }
 
         private void DrawRemoveSection(float x, ref float y, float w)
@@ -216,6 +262,28 @@ namespace DungeonWarfare
 #else
             Application.Quit();
 #endif
+        }
+
+        // Top-of-board prompt: invite the first start, or show the next-wave countdown.
+        private void DrawWavePrompt()
+        {
+            if (waves == null) return;
+
+            string text;
+            if (waves.AwaitingStart) text = "布置好防御后，点击右侧 ▶ 开始";
+            else if (waves.CountingDown) text = $"下一波 {waves.Countdown:0.0}s　提前开始 +{waves.EarlyStartBonus} 金";
+            else return;
+
+            var area = new Rect(PlayAreaCenterX() - 260f, Screen.height * 0.12f, 520f, 40f);
+            GUI.Label(area, text, hint);
+        }
+
+        // Brief "+N gold" feedback when an early start is rewarded.
+        private void DrawBonusToast()
+        {
+            if (bonusToastTimer <= 0f) return;
+            var area = new Rect(PlayAreaCenterX() - 200f, Screen.height * 0.18f, 400f, 36f);
+            GUI.Label(area, $"提前开始  +{bonusToastAmount} 金币", hint);
         }
 
         private void DrawWaveBanner()
