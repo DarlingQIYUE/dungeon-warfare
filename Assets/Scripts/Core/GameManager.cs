@@ -16,6 +16,8 @@ namespace DungeonWarfare
 
         public int Gold { get; private set; }
         public int Lives { get; private set; }
+        public int StartingLives => startingLives;
+        public int EnemiesKilled { get; private set; }
 
         public event Action<int> GoldChanged;
         public event Action<int> LivesChanged;
@@ -37,6 +39,7 @@ namespace DungeonWarfare
         {
             Gold = startingGold;
             Lives = startingLives;
+            EnemiesKilled = 0;
             GoldChanged?.Invoke(Gold);
             LivesChanged?.Invoke(Lives);
         }
@@ -56,7 +59,11 @@ namespace DungeonWarfare
             GoldChanged?.Invoke(Gold);
         }
 
-        public void OnEnemyKilled(int reward) => AddGold(reward);
+        public void OnEnemyKilled(int reward)
+        {
+            EnemiesKilled++;
+            AddGold(reward);
+        }
 
         public void OnEnemyReachedBase(int damage)
         {

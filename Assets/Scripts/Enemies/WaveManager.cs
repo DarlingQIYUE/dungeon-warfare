@@ -29,6 +29,14 @@ namespace DungeonWarfare
         public int TotalWaves => totalWaves;
         public int CurrentWave { get; private set; }
         public int AliveCount { get; private set; }
+        public int EnemiesPerWave => enemiesPerWave;
+
+        /// <summary>True while a wave is queued behind the start/countdown gate.</summary>
+        public bool HasNextWavePreview => AwaitingStart || CountingDown;
+        /// <summary>The wave number that the gate will release next.</summary>
+        public int NextWaveNumber => Mathf.Min(CurrentWave + 1, totalWaves);
+        /// <summary>Per-enemy HP of that upcoming wave.</summary>
+        public float NextWaveEnemyHealth => baseHealth * Mathf.Pow(healthGrowth, NextWaveNumber - 1);
 
         /// <summary>Before wave 1: waiting for the player to press start (no timer).</summary>
         public bool AwaitingStart { get; private set; }

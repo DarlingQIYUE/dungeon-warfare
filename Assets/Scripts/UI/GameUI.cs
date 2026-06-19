@@ -21,6 +21,10 @@ namespace DungeonWarfare
 
         private bool paused;     // space quick-pause
         private bool menuOpen;   // esc pause menu
+
+        private static readonly float[] Speeds = { 1f, 2f, 3f };
+        private int speedIndex;  // index into Speeds; the active game speed multiplier
+        private float GameSpeed => Speeds[speedIndex];
         private float waveBannerTimer;
         private int bannerWave;
         private float bonusToastTimer;
@@ -81,7 +85,9 @@ namespace DungeonWarfare
             }
             if (!playing) { paused = false; menuOpen = false; }
 
-            Time.timeScale = (paused || menuOpen) ? 0f : 1f;
+            // Game speed multiplier while playing; frozen by pause/menu; normal (1x)
+            // on menus/result screens so they aren't sped up.
+            Time.timeScale = !playing ? 1f : (paused || menuOpen) ? 0f : GameSpeed;
 
             // The ESC menu hard-blocks board interaction; the space time-stop does
             // not. Publish that via GameFlow so the placer can tell them apart.
@@ -153,15 +159,40 @@ namespace DungeonWarfare
         private void DrawResult(string text, Color color)
         {
             DrawDim();
-            var area = Centered(460, 280);
+            var area = Centered(460, 420);
             GUILayout.BeginArea(area);
             banner.normal.textColor = color;
             GUILayout.Label(text, banner);
-            GUILayout.Space(24);
+            GUILayout.Space(12);
+
+            bool won = flow.State == GameState.Won;
+            int wave = waves != null ? waves.CurrentWave : 0;
+            int total = waves != null ? waves.TotalWaves : 0;
+
+            hint.normal.textColor = Color.white;
+            if (won) GUILayout.Label(StarRating(), hint);
+            GUILayout.Label($"波数 {wave} / {total}", hint);
+            if (game != null)
+            {
+                GUILayout.Label($"击杀 {game.EnemiesKilled}", hint);
+                GUILayout.Label($"剩余生命 {game.Lives} / {game.StartingLives}", hint);
+            }
+            hint.normal.textColor = new Color(1f, 0.9f, 0.5f); // restore
+
+            GUILayout.Space(18);
             if (GUILayout.Button("重玩", button, GUILayout.Height(50))) flow.Retry();
             GUILayout.Space(10);
             if (GUILayout.Button("返回菜单", button, GUILayout.Height(40))) flow.BackToMenu();
             GUILayout.EndArea();
+        }
+
+        // 3 stars if no lives lost, 2 if at least half remain, else 1 (win only).
+        private string StarRating()
+        {
+            if (game == null) return "";
+            float frac = (float)game.Lives / Mathf.Max(1, game.StartingLives);
+            int stars = game.Lives >= game.StartingLives ? 3 : frac >= 0.5f ? 2 : 1;
+            return new string('★', stars) + new string('☆', 3 - stars);
         }
 
         private void DrawSidebar()
@@ -186,7 +217,11 @@ namespace DungeonWarfare
                 GUI.Label(new Rect(x, y, w, 20), "剩余敌人", sideHeader); y += 22f;
                 GUI.Label(new Rect(x, y, w, 30), $"{waves.AliveCount}", sideValue); y += 42f;
 
-                if (flow.State == GameState.Playing) DrawWaveControl(x, ref y, w);
+                if (flow.State == GameState.Playing)
+                {
+                    DrawWaveControl(x, ref y, w);
+                    DrawSpeedControl(x, ref y, w);
+                }
             }
 
             // Build menu (only while actively playing)
@@ -199,11 +234,27 @@ namespace DungeonWarfare
                 DrawRemoveSection(x, ref y, w);
         }
 
+        // Cycle the game speed (1x / 2x / 3x).
+        private void DrawSpeedControl(float x, ref float y, float w)
+        {
+            GUI.Label(new Rect(x, y, w, 18), "速度 SPEED", sideHeader); y += 20f;
+            if (GUI.Button(new Rect(x, y, w, 34), $"▶ x{GameSpeed:0}", buildButton))
+                speedIndex = (speedIndex + 1) % Speeds.Length;
+            y += 40f;
+        }
+
         // Start the first wave, or count down to / early-start the next one.
         private void DrawWaveControl(float x, ref float y, float w)
         {
             if (waves == null) return;
             Color prev = GUI.backgroundColor;
+
+            // Upcoming wave composition (single enemy type for now: count + HP).
+            if (waves.HasNextWavePreview)
+            {
+                GUI.Label(new Rect(x, y, w, 18), $"下一波 #{waves.NextWaveNumber}", sideHeader); y += 20f;
+                GUI.Label(new Rect(x, y, w, 20), $"{waves.EnemiesPerWave} 只 · HP {waves.NextWaveEnemyHealth:0}", hint); y += 24f;
+            }
 
             if (waves.AwaitingStart)
             {
@@ -228,6 +279,14 @@ namespace DungeonWarfare
         {
             y += 12f;
             GUI.Label(new Rect(x, y, w, 20), $"已选：{placer.SelectedLabel}", sideHeader); y += 24f;
+
+            // Stats for a selected tower (terrain has none).
+            Tower sel = placer.SelectedTower;
+            if (sel != null)
+            {
+                GUI.Label(new Rect(x, y, w, 18), $"伤害 {sel.Damage:0}　射程 {sel.Range:0.0}", hint); y += 20f;
+                GUI.Label(new Rect(x, y, w, 18), $"攻速 每 {sel.FireInterval:0.0}s", hint); y += 22f;
+            }
 
             Color prev = GUI.backgroundColor;
             GUI.backgroundColor = new Color(0.82f, 0.42f, 0.36f);

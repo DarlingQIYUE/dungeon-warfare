@@ -59,6 +59,10 @@ namespace DungeonWarfare
         public bool HasSelection => hasSelection;
         public string SelectedLabel =>
             !hasSelection ? "" : grid.HasTower(selectedCell) ? "炮塔" : "地形";
+        /// <summary>The selected cell's tower (null if a terrain block is selected).</summary>
+        public Tower SelectedTower =>
+            hasSelection && grid.HasTower(selectedCell) ? FindAtCell<Tower>(selectedCell) : null;
+
         public int SelectedRefund
         {
             get
