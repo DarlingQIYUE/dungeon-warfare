@@ -33,6 +33,10 @@ namespace DungeonWarfare.EditorTools
         // Slightly under one 0.5-unit cell so units sit inside their cell.
         private const float UnitSize = 0.45f;
 
+        // Enemies are half the tower's size: smaller body leaves lateral room in
+        // the corridors so the continuous (corner-cutting) movement doesn't clip walls.
+        private const float EnemySize = UnitSize * 0.5f;
+
         [MenuItem("Tools/Dungeon Warfare/Build Demo Scene")]
         public static void BuildDemoScene()
         {
@@ -126,7 +130,7 @@ namespace DungeonWarfare.EditorTools
             EnsureFolder(PrefabDir);
 
             var go = new GameObject("Enemy");
-            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+            go.transform.localScale = new Vector3(EnemySize, EnemySize, 1f);
 
             var sr = go.AddComponent<SpriteRenderer>();
             sr.sprite = circle;
@@ -318,24 +322,24 @@ namespace DungeonWarfare.EditorTools
         // The enemy route is found automatically (BFS) over the road cells.
         private static readonly string[] MapRows =
         {
-            "............................",
-            "E##########################.",
-            "......................######",
-            "........................####",
-            "........................####",
-            "......................###..#",
-            "....................###....#",
-            "................#####......#",
-            "...............##...#......#",
             "############################",
-            "#....#......................",
-            "#...##......................",
-            "#...#.......................",
-            "#..###......................",
-            "#.##.##.....................",
-            "###...###...................",
-            "#.......##..................",
-            "###########################X",
+            "E###########################",
+            "############################",
+            ".........................###",
+            ".........................###",
+            ".........................###",
+            "############################",
+            "############################",
+            "############################",
+            "###.........................",
+            "###.........................",
+            "###.........................",
+            "############################",
+            "############################",
+            "############################",
+            ".........................###",
+            ".........................###",
+            ".........................##X",
         };
 
         /// <summary>Parse <see cref="MapRows"/> into road cells + entry/exit.</summary>

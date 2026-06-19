@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &9129325
+--- !u!1 &9414556
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,9 +127,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9129328}
-  - component: {fileID: 9129326}
-  - component: {fileID: 9129327}
+  - component: {fileID: 9414559}
+  - component: {fileID: 9414557}
+  - component: {fileID: 9414558}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -137,13 +137,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!20 &9129326
+--- !u!20 &9414557
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9129325}
+  m_GameObject: {fileID: 9414556}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
@@ -188,30 +188,30 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &9129327
+--- !u!114 &9414558
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9129325}
+  m_GameObject: {fileID: 9414556}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87da661b589c6f14bb5a61db59e17f5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameViewportLayout
-  worldCamera: {fileID: 9129326}
-  sidebarCamera: {fileID: 1968905242}
+  worldCamera: {fileID: 9414557}
+  sidebarCamera: {fileID: 1370871751}
   aspectWidth: 16
   aspectHeight: 9
   sidebarUnits: 2
---- !u!4 &9129328
+--- !u!4 &9414559
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9129325}
+  m_GameObject: {fileID: 9414556}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
@@ -220,7 +220,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &750166760
+--- !u!1 &596974410
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -228,8 +228,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 750166762}
-  - component: {fileID: 750166761}
+  - component: {fileID: 596974412}
+  - component: {fileID: 596974411}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -237,13 +237,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &750166761
+--- !u!114 &596974411
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 750166760}
+  m_GameObject: {fileID: 596974410}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 579bb819fc2e0dd42a4b13db6d1547c8, type: 3}
@@ -254,6 +254,34 @@ MonoBehaviour:
   columns: 28
   rows: 18
   pathCells:
+  - {x: 0, y: 17}
+  - {x: 1, y: 17}
+  - {x: 2, y: 17}
+  - {x: 3, y: 17}
+  - {x: 4, y: 17}
+  - {x: 5, y: 17}
+  - {x: 6, y: 17}
+  - {x: 7, y: 17}
+  - {x: 8, y: 17}
+  - {x: 9, y: 17}
+  - {x: 10, y: 17}
+  - {x: 11, y: 17}
+  - {x: 12, y: 17}
+  - {x: 13, y: 17}
+  - {x: 14, y: 17}
+  - {x: 15, y: 17}
+  - {x: 16, y: 17}
+  - {x: 17, y: 17}
+  - {x: 18, y: 17}
+  - {x: 19, y: 17}
+  - {x: 20, y: 17}
+  - {x: 21, y: 17}
+  - {x: 22, y: 17}
+  - {x: 23, y: 17}
+  - {x: 24, y: 17}
+  - {x: 25, y: 17}
+  - {x: 26, y: 17}
+  - {x: 27, y: 17}
   - {x: 0, y: 16}
   - {x: 1, y: 16}
   - {x: 2, y: 16}
@@ -281,116 +309,227 @@ MonoBehaviour:
   - {x: 24, y: 16}
   - {x: 25, y: 16}
   - {x: 26, y: 16}
+  - {x: 27, y: 16}
+  - {x: 0, y: 15}
+  - {x: 1, y: 15}
+  - {x: 2, y: 15}
+  - {x: 3, y: 15}
+  - {x: 4, y: 15}
+  - {x: 5, y: 15}
+  - {x: 6, y: 15}
+  - {x: 7, y: 15}
+  - {x: 8, y: 15}
+  - {x: 9, y: 15}
+  - {x: 10, y: 15}
+  - {x: 11, y: 15}
+  - {x: 12, y: 15}
+  - {x: 13, y: 15}
+  - {x: 14, y: 15}
+  - {x: 15, y: 15}
+  - {x: 16, y: 15}
+  - {x: 17, y: 15}
+  - {x: 18, y: 15}
+  - {x: 19, y: 15}
+  - {x: 20, y: 15}
+  - {x: 21, y: 15}
   - {x: 22, y: 15}
   - {x: 23, y: 15}
   - {x: 24, y: 15}
   - {x: 25, y: 15}
   - {x: 26, y: 15}
   - {x: 27, y: 15}
-  - {x: 24, y: 14}
   - {x: 25, y: 14}
   - {x: 26, y: 14}
   - {x: 27, y: 14}
-  - {x: 24, y: 13}
   - {x: 25, y: 13}
   - {x: 26, y: 13}
   - {x: 27, y: 13}
-  - {x: 22, y: 12}
-  - {x: 23, y: 12}
-  - {x: 24, y: 12}
+  - {x: 25, y: 12}
+  - {x: 26, y: 12}
   - {x: 27, y: 12}
+  - {x: 0, y: 11}
+  - {x: 1, y: 11}
+  - {x: 2, y: 11}
+  - {x: 3, y: 11}
+  - {x: 4, y: 11}
+  - {x: 5, y: 11}
+  - {x: 6, y: 11}
+  - {x: 7, y: 11}
+  - {x: 8, y: 11}
+  - {x: 9, y: 11}
+  - {x: 10, y: 11}
+  - {x: 11, y: 11}
+  - {x: 12, y: 11}
+  - {x: 13, y: 11}
+  - {x: 14, y: 11}
+  - {x: 15, y: 11}
+  - {x: 16, y: 11}
+  - {x: 17, y: 11}
+  - {x: 18, y: 11}
+  - {x: 19, y: 11}
   - {x: 20, y: 11}
   - {x: 21, y: 11}
   - {x: 22, y: 11}
+  - {x: 23, y: 11}
+  - {x: 24, y: 11}
+  - {x: 25, y: 11}
+  - {x: 26, y: 11}
   - {x: 27, y: 11}
+  - {x: 0, y: 10}
+  - {x: 1, y: 10}
+  - {x: 2, y: 10}
+  - {x: 3, y: 10}
+  - {x: 4, y: 10}
+  - {x: 5, y: 10}
+  - {x: 6, y: 10}
+  - {x: 7, y: 10}
+  - {x: 8, y: 10}
+  - {x: 9, y: 10}
+  - {x: 10, y: 10}
+  - {x: 11, y: 10}
+  - {x: 12, y: 10}
+  - {x: 13, y: 10}
+  - {x: 14, y: 10}
+  - {x: 15, y: 10}
   - {x: 16, y: 10}
   - {x: 17, y: 10}
   - {x: 18, y: 10}
   - {x: 19, y: 10}
   - {x: 20, y: 10}
+  - {x: 21, y: 10}
+  - {x: 22, y: 10}
+  - {x: 23, y: 10}
+  - {x: 24, y: 10}
+  - {x: 25, y: 10}
+  - {x: 26, y: 10}
   - {x: 27, y: 10}
+  - {x: 0, y: 9}
+  - {x: 1, y: 9}
+  - {x: 2, y: 9}
+  - {x: 3, y: 9}
+  - {x: 4, y: 9}
+  - {x: 5, y: 9}
+  - {x: 6, y: 9}
+  - {x: 7, y: 9}
+  - {x: 8, y: 9}
+  - {x: 9, y: 9}
+  - {x: 10, y: 9}
+  - {x: 11, y: 9}
+  - {x: 12, y: 9}
+  - {x: 13, y: 9}
+  - {x: 14, y: 9}
   - {x: 15, y: 9}
   - {x: 16, y: 9}
+  - {x: 17, y: 9}
+  - {x: 18, y: 9}
+  - {x: 19, y: 9}
   - {x: 20, y: 9}
+  - {x: 21, y: 9}
+  - {x: 22, y: 9}
+  - {x: 23, y: 9}
+  - {x: 24, y: 9}
+  - {x: 25, y: 9}
+  - {x: 26, y: 9}
   - {x: 27, y: 9}
   - {x: 0, y: 8}
   - {x: 1, y: 8}
   - {x: 2, y: 8}
-  - {x: 3, y: 8}
-  - {x: 4, y: 8}
-  - {x: 5, y: 8}
-  - {x: 6, y: 8}
-  - {x: 7, y: 8}
-  - {x: 8, y: 8}
-  - {x: 9, y: 8}
-  - {x: 10, y: 8}
-  - {x: 11, y: 8}
-  - {x: 12, y: 8}
-  - {x: 13, y: 8}
-  - {x: 14, y: 8}
-  - {x: 15, y: 8}
-  - {x: 16, y: 8}
-  - {x: 17, y: 8}
-  - {x: 18, y: 8}
-  - {x: 19, y: 8}
-  - {x: 20, y: 8}
-  - {x: 21, y: 8}
-  - {x: 22, y: 8}
-  - {x: 23, y: 8}
-  - {x: 24, y: 8}
-  - {x: 25, y: 8}
-  - {x: 26, y: 8}
-  - {x: 27, y: 8}
   - {x: 0, y: 7}
-  - {x: 5, y: 7}
+  - {x: 1, y: 7}
+  - {x: 2, y: 7}
   - {x: 0, y: 6}
-  - {x: 4, y: 6}
-  - {x: 5, y: 6}
+  - {x: 1, y: 6}
+  - {x: 2, y: 6}
   - {x: 0, y: 5}
+  - {x: 1, y: 5}
+  - {x: 2, y: 5}
+  - {x: 3, y: 5}
   - {x: 4, y: 5}
+  - {x: 5, y: 5}
+  - {x: 6, y: 5}
+  - {x: 7, y: 5}
+  - {x: 8, y: 5}
+  - {x: 9, y: 5}
+  - {x: 10, y: 5}
+  - {x: 11, y: 5}
+  - {x: 12, y: 5}
+  - {x: 13, y: 5}
+  - {x: 14, y: 5}
+  - {x: 15, y: 5}
+  - {x: 16, y: 5}
+  - {x: 17, y: 5}
+  - {x: 18, y: 5}
+  - {x: 19, y: 5}
+  - {x: 20, y: 5}
+  - {x: 21, y: 5}
+  - {x: 22, y: 5}
+  - {x: 23, y: 5}
+  - {x: 24, y: 5}
+  - {x: 25, y: 5}
+  - {x: 26, y: 5}
+  - {x: 27, y: 5}
   - {x: 0, y: 4}
+  - {x: 1, y: 4}
+  - {x: 2, y: 4}
   - {x: 3, y: 4}
   - {x: 4, y: 4}
   - {x: 5, y: 4}
+  - {x: 6, y: 4}
+  - {x: 7, y: 4}
+  - {x: 8, y: 4}
+  - {x: 9, y: 4}
+  - {x: 10, y: 4}
+  - {x: 11, y: 4}
+  - {x: 12, y: 4}
+  - {x: 13, y: 4}
+  - {x: 14, y: 4}
+  - {x: 15, y: 4}
+  - {x: 16, y: 4}
+  - {x: 17, y: 4}
+  - {x: 18, y: 4}
+  - {x: 19, y: 4}
+  - {x: 20, y: 4}
+  - {x: 21, y: 4}
+  - {x: 22, y: 4}
+  - {x: 23, y: 4}
+  - {x: 24, y: 4}
+  - {x: 25, y: 4}
+  - {x: 26, y: 4}
+  - {x: 27, y: 4}
   - {x: 0, y: 3}
+  - {x: 1, y: 3}
   - {x: 2, y: 3}
   - {x: 3, y: 3}
+  - {x: 4, y: 3}
   - {x: 5, y: 3}
   - {x: 6, y: 3}
-  - {x: 0, y: 2}
-  - {x: 1, y: 2}
-  - {x: 2, y: 2}
-  - {x: 6, y: 2}
-  - {x: 7, y: 2}
-  - {x: 8, y: 2}
-  - {x: 0, y: 1}
-  - {x: 8, y: 1}
-  - {x: 9, y: 1}
-  - {x: 0, y: 0}
-  - {x: 1, y: 0}
-  - {x: 2, y: 0}
-  - {x: 3, y: 0}
-  - {x: 4, y: 0}
-  - {x: 5, y: 0}
-  - {x: 6, y: 0}
-  - {x: 7, y: 0}
-  - {x: 8, y: 0}
-  - {x: 9, y: 0}
-  - {x: 10, y: 0}
-  - {x: 11, y: 0}
-  - {x: 12, y: 0}
-  - {x: 13, y: 0}
-  - {x: 14, y: 0}
-  - {x: 15, y: 0}
-  - {x: 16, y: 0}
-  - {x: 17, y: 0}
-  - {x: 18, y: 0}
-  - {x: 19, y: 0}
-  - {x: 20, y: 0}
-  - {x: 21, y: 0}
-  - {x: 22, y: 0}
-  - {x: 23, y: 0}
-  - {x: 24, y: 0}
+  - {x: 7, y: 3}
+  - {x: 8, y: 3}
+  - {x: 9, y: 3}
+  - {x: 10, y: 3}
+  - {x: 11, y: 3}
+  - {x: 12, y: 3}
+  - {x: 13, y: 3}
+  - {x: 14, y: 3}
+  - {x: 15, y: 3}
+  - {x: 16, y: 3}
+  - {x: 17, y: 3}
+  - {x: 18, y: 3}
+  - {x: 19, y: 3}
+  - {x: 20, y: 3}
+  - {x: 21, y: 3}
+  - {x: 22, y: 3}
+  - {x: 23, y: 3}
+  - {x: 24, y: 3}
+  - {x: 25, y: 3}
+  - {x: 26, y: 3}
+  - {x: 27, y: 3}
+  - {x: 25, y: 2}
+  - {x: 26, y: 2}
+  - {x: 27, y: 2}
+  - {x: 25, y: 1}
+  - {x: 26, y: 1}
+  - {x: 27, y: 1}
   - {x: 25, y: 0}
   - {x: 26, y: 0}
   - {x: 27, y: 0}
@@ -399,13 +538,13 @@ MonoBehaviour:
   tileSprite: {fileID: 21300000, guid: bd3e5ed04acf348489a34833115044cb, type: 3}
   buildableColor: {r: 0.4, g: 0.6, b: 0.9, a: 0.14}
   pathColor: {r: 0.45, g: 0.36, b: 0.26, a: 0.85}
---- !u!4 &750166762
+--- !u!4 &596974412
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 750166760}
+  m_GameObject: {fileID: 596974410}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -414,7 +553,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1854512810
+--- !u!1 &1370871750
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -422,135 +561,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1854512816}
-  - component: {fileID: 1854512815}
-  - component: {fileID: 1854512814}
-  - component: {fileID: 1854512813}
-  - component: {fileID: 1854512812}
-  - component: {fileID: 1854512811}
-  m_Layer: 0
-  m_Name: Systems
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1854512811
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1854512810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94b486c8dea08c249a66efc87c0f5bfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameUI
-  flow: {fileID: 1854512812}
-  game: {fileID: 1854512815}
-  waves: {fileID: 1854512814}
-  placer: {fileID: 1854512813}
-  sidebarCamera: {fileID: 1968905242}
---- !u!114 &1854512812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1854512810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ade392bfa13d884caad61791becdaf9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameFlow
-  game: {fileID: 1854512815}
-  waves: {fileID: 1854512814}
-  grid: {fileID: 750166761}
---- !u!114 &1854512813
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1854512810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45b41ca9b14a5ef4c8fe4c1e79f9b27c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GridPlacer
-  towerPrefab: {fileID: 0}
-  terrainPrefab: {fileID: 0}
-  grid: {fileID: 750166761}
-  cam: {fileID: 9129326}
-  game: {fileID: 1854512815}
-  ghostSprite: {fileID: 21300000, guid: bd3e5ed04acf348489a34833115044cb, type: 3}
-  okColor: {r: 0.3, g: 1, b: 0.3, a: 0.45}
-  badColor: {r: 1, g: 0.3, b: 0.3, a: 0.45}
-  rangeSprite: {fileID: 21300000, guid: fe299d18606626242b2876180a7ba47b, type: 3}
-  rangeColor: {r: 1, g: 1, b: 0.4, a: 0.13}
-  refundRate: 0.6
---- !u!114 &1854512814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1854512810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd583ad1d20a59c4890dd6747f80943d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.WaveManager
-  enemyPrefab: {fileID: 0}
-  grid: {fileID: 750166761}
-  game: {fileID: 1854512815}
-  totalWaves: 8
-  enemiesPerWave: 10
-  baseHealth: 30
-  healthGrowth: 1.5
-  spawnInterval: 0.8
-  startDelay: 1
-  betweenWaveDelay: 2.5
---- !u!114 &1854512815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1854512810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e10156c8ac204674bb3cf5d530f3a4f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameManager
-  startingGold: 100
-  startingLives: 20
---- !u!4 &1854512816
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1854512810}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1968905241
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1968905243}
-  - component: {fileID: 1968905242}
+  - component: {fileID: 1370871752}
+  - component: {fileID: 1370871751}
   m_Layer: 0
   m_Name: Sidebar Camera
   m_TagString: Untagged
@@ -558,13 +570,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!20 &1968905242
+--- !u!20 &1370871751
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1968905241}
+  m_GameObject: {fileID: 1370871750}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
@@ -609,16 +621,143 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!4 &1968905243
+--- !u!4 &1370871752
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1968905241}
+  m_GameObject: {fileID: 1370871750}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 100, y: 100, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1393588856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1393588862}
+  - component: {fileID: 1393588861}
+  - component: {fileID: 1393588860}
+  - component: {fileID: 1393588859}
+  - component: {fileID: 1393588858}
+  - component: {fileID: 1393588857}
+  m_Layer: 0
+  m_Name: Systems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1393588857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393588856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94b486c8dea08c249a66efc87c0f5bfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameUI
+  flow: {fileID: 1393588858}
+  game: {fileID: 1393588861}
+  waves: {fileID: 1393588860}
+  placer: {fileID: 1393588859}
+  sidebarCamera: {fileID: 1370871751}
+--- !u!114 &1393588858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393588856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ade392bfa13d884caad61791becdaf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameFlow
+  game: {fileID: 1393588861}
+  waves: {fileID: 1393588860}
+  grid: {fileID: 596974411}
+--- !u!114 &1393588859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393588856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45b41ca9b14a5ef4c8fe4c1e79f9b27c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GridPlacer
+  towerPrefab: {fileID: 0}
+  terrainPrefab: {fileID: 0}
+  grid: {fileID: 596974411}
+  cam: {fileID: 9414557}
+  game: {fileID: 1393588861}
+  ghostSprite: {fileID: 21300000, guid: bd3e5ed04acf348489a34833115044cb, type: 3}
+  okColor: {r: 0.3, g: 1, b: 0.3, a: 0.45}
+  badColor: {r: 1, g: 0.3, b: 0.3, a: 0.45}
+  rangeSprite: {fileID: 21300000, guid: fe299d18606626242b2876180a7ba47b, type: 3}
+  rangeColor: {r: 1, g: 1, b: 0.4, a: 0.13}
+  refundRate: 0.6
+--- !u!114 &1393588860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393588856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd583ad1d20a59c4890dd6747f80943d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.WaveManager
+  enemyPrefab: {fileID: 0}
+  grid: {fileID: 596974411}
+  game: {fileID: 1393588861}
+  totalWaves: 8
+  enemiesPerWave: 10
+  baseHealth: 30
+  healthGrowth: 1.5
+  spawnInterval: 0.8
+  startDelay: 1
+  betweenWaveDelay: 2.5
+--- !u!114 &1393588861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393588856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e10156c8ac204674bb3cf5d530f3a4f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameManager
+  startingGold: 100
+  startingLives: 20
+--- !u!4 &1393588862
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1393588856}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -628,7 +767,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 750166762}
-  - {fileID: 9129328}
-  - {fileID: 1968905243}
-  - {fileID: 1854512816}
+  - {fileID: 596974412}
+  - {fileID: 9414559}
+  - {fileID: 1370871752}
+  - {fileID: 1393588862}
