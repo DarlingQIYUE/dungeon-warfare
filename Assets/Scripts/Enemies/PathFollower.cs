@@ -24,6 +24,12 @@ namespace DungeonWarfare
                  "as gizmos (enable Gizmos in the Game view to see them at runtime).")]
         [SerializeField] private bool debugDraw = true;
 
+        private Vector3 knockVel;            // active knockback velocity (decays each frame)
+        private Vector3 heading = Vector3.right; // current movement direction (toward the carrot)
+
+        /// <summary>Raised when a knockback slams the enemy into a wall, with the impact speed.</summary>
+        public event System.Action<float> WallSlammed;
+
         private GridSystem grid;
         private readonly List<Vector3> path = new(); // route as world-space cell centers
         private int seg;                             // segment we're on: path[seg] -> path[seg+1]
@@ -121,6 +127,7 @@ namespace DungeonWarfare
             if (path.Count == 1)
             {
                 transform.position = Vector3.MoveTowards(pos, path[0], speed * Time.deltaTime);
+                ApplyKnockback();
                 if (Vector3.Distance(transform.position, path[0]) < 0.04f) ReachedEnd = true;
                 return;
             }
@@ -131,18 +138,75 @@ namespace DungeonWarfare
 
             // 2) Aim at a point `lookahead` further along the route and walk to it.
             Vector3 carrot = PointAhead(pos, lookahead);
+            Vector3 toCarrot = carrot - pos;
+            if (toCarrot.sqrMagnitude > 1e-6f) heading = toCarrot.normalized;
             transform.position = Vector3.MoveTowards(pos, carrot, speed * Time.deltaTime);
+
+            // 3) Add any active knockback on top of the path movement (they sum).
+            ApplyKnockback();
 
             if (debugDraw)
             {
-                DistanceToSegment(pos, path[seg], path[seg + 1], out float t);
+                DistanceToSegment(transform.position, path[seg], path[seg + 1], out float t);
                 debugProj = Vector3.Lerp(path[seg], path[seg + 1], t);
                 debugCarrot = carrot;
             }
 
-            // 3) Finished once we're on the last segment and close to the exit point.
+            // 4) Finished once we're on the last segment and close to the exit point.
             if (seg >= path.Count - 2 && Vector3.Distance(transform.position, path[^1]) < 0.04f)
                 ReachedEnd = true;
+        }
+
+        /// <summary>Radial knockback away from <paramref name="sourcePos"/> (for splash hits).</summary>
+        public void AddKnockback(Vector3 sourcePos, float strength, float spreadDegrees = 0f)
+            => AddImpulse(transform.position - sourcePos, strength, spreadDegrees);
+
+        /// <summary>Knockback straight back along the enemy's travel direction (for a direct hit).</summary>
+        public void AddKnockbackBackward(float strength, float spreadDegrees = 0f)
+            => AddImpulse(-heading, strength, spreadDegrees);
+
+        /// <summary>
+        /// Add a knockback impulse in <paramref name="dir"/>, jittered by ±<paramref name="spreadDegrees"/>.
+        /// A zero direction falls back to a random outward one so the impulse still lands.
+        /// </summary>
+        private void AddImpulse(Vector3 dir, float strength, float spreadDegrees)
+        {
+            if (strength <= 0f) return;
+
+            dir.z = 0f;
+            if (dir.sqrMagnitude < 1e-6f)
+            {
+                float a = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+                dir = new Vector3(Mathf.Cos(a), Mathf.Sin(a), 0f);
+            }
+            else dir.Normalize();
+
+            if (spreadDegrees > 0f)
+                dir = Quaternion.Euler(0f, 0f, Random.Range(-spreadDegrees, spreadDegrees)) * dir;
+
+            knockVel += dir * strength;
+        }
+
+        /// <summary>
+        /// Displace by the knockback velocity, then decay it. If the step would enter a
+        /// wall, stop dead at the wall (report the impact speed for slam damage) instead
+        /// of pushing through. Path-following resumes once the impulse fades.
+        /// </summary>
+        private void ApplyKnockback()
+        {
+            if (knockVel.sqrMagnitude < 1e-5f) { knockVel = Vector3.zero; return; }
+
+            Vector3 next = transform.position + knockVel * Time.deltaTime;
+            if (grid.IsWalkable(grid.WorldToCell(next)))
+            {
+                transform.position = next;
+                knockVel *= Mathf.Exp(-DebugTuning.KnockDecay * Time.deltaTime);
+            }
+            else
+            {
+                WallSlammed?.Invoke(knockVel.magnitude);
+                knockVel = Vector3.zero; // slam: stop here, normal movement resumes
+            }
         }
 
         /// <summary>

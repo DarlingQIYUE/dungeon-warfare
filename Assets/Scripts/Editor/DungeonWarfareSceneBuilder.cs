@@ -25,7 +25,9 @@ namespace DungeonWarfare.EditorTools
         private const string CirclePath = ArtDir + "/WhiteCircle.png";
         private const string EnemyPrefabPath = PrefabDir + "/Enemy.prefab";
         private const string TowerPrefabPath = PrefabDir + "/Tower.prefab";
+        private const string BombTowerPrefabPath = PrefabDir + "/BombTower.prefab";
         private const string ProjectilePrefabPath = PrefabDir + "/Projectile.prefab";
+        private const string BombProjectilePrefabPath = PrefabDir + "/BombProjectile.prefab";
         private const string TerrainPrefabPath = PrefabDir + "/Terrain.prefab";
         private const string ScenePath = SceneDir + "/DungeonWarfare.unity";
 
@@ -47,10 +49,12 @@ namespace DungeonWarfare.EditorTools
             Sprite circle = EnsureCircleSprite();
             Projectile projectilePrefab = EnsureProjectilePrefab(circle);
             Tower towerPrefab = EnsureTowerPrefab(square, projectilePrefab);
+            BombProjectile bombProjectilePrefab = EnsureBombProjectilePrefab(circle);
+            Tower bombTowerPrefab = EnsureBombTowerPrefab(square, bombProjectilePrefab);
             Terrain terrainPrefab = EnsureTerrainPrefab(square);
             Enemy enemyPrefab = EnsureEnemyPrefab(circle, square);
 
-            BuildScene(square, circle, enemyPrefab, towerPrefab, terrainPrefab);
+            BuildScene(square, circle, enemyPrefab, new[] { towerPrefab, bombTowerPrefab }, terrainPrefab);
 
             AssetDatabase.SaveAssets();
             Debug.Log("[DungeonWarfare] Demo scene built. Press Play -> 开始游戏 -> 第 1 关, then left-click cells to build towers.");
@@ -207,6 +211,54 @@ namespace DungeonWarfare.EditorTools
             return asset;
         }
 
+        private static BombProjectile EnsureBombProjectilePrefab(Sprite circle)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("BombProjectile");
+            go.transform.localScale = new Vector3(0.22f, 0.22f, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = circle;
+            sr.color = new Color(1f, 0.55f, 0.2f); // orange shell
+            sr.sortingOrder = 4;
+
+            go.AddComponent<BombProjectile>(); // knockback/AoE values come from DebugTuning
+
+            BombProjectile asset = PrefabUtility.SaveAsPrefabAsset(go, BombProjectilePrefabPath)
+                .GetComponent<BombProjectile>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Tower EnsureBombTowerPrefab(Sprite square, Projectile projectilePrefab)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("BombTower");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.85f, 0.5f, 0.25f); // orange = cannon
+            sr.sortingOrder = 3;
+
+            var hitbox = go.AddComponent<BoxCollider2D>();
+            hitbox.size = new Vector2(1.1f, 1.1f);
+            hitbox.isTrigger = true;
+
+            Tower tower = go.AddComponent<Tower>();
+            SetRef(tower, "projectilePrefab", projectilePrefab);
+            SetString(tower, "displayName", "加农炮");
+            SetInt(tower, "cost", 50);
+            SetFloat(tower, "fireInterval", 1.8f);
+            SetFloat(tower, "damage", 25f);
+
+            Tower asset = PrefabUtility.SaveAsPrefabAsset(go, BombTowerPrefabPath).GetComponent<Tower>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
         private static Terrain EnsureTerrainPrefab(Sprite square)
         {
             EnsureFolder(PrefabDir);
@@ -230,7 +282,7 @@ namespace DungeonWarfare.EditorTools
         // ---------- Scene ----------
 
         private static void BuildScene(Sprite square, Sprite circle, Enemy enemyPrefab,
-                                       Tower towerPrefab, Terrain terrainPrefab)
+                                       Tower[] towerPrefabs, Terrain terrainPrefab)
         {
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
@@ -291,7 +343,7 @@ namespace DungeonWarfare.EditorTools
             SetRef(waves, "grid", grid);
             SetRef(waves, "game", game);
 
-            SetRef(placer, "towerPrefab", towerPrefab);
+            SetObjectArray(placer, "towerPrefabs", towerPrefabs);
             SetRef(placer, "terrainPrefab", terrainPrefab);
             SetRef(placer, "grid", grid);
             SetRef(placer, "cam", cam);
@@ -395,6 +447,35 @@ namespace DungeonWarfare.EditorTools
             var prop = so.FindProperty(field);
             if (prop == null) { Debug.LogError($"[DungeonWarfare] Missing field '{field}' on {target}"); return; }
             prop.intValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetFloat(Object target, string field, float value)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(field);
+            if (prop == null) { Debug.LogError($"[DungeonWarfare] Missing field '{field}' on {target}"); return; }
+            prop.floatValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetString(Object target, string field, string value)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(field);
+            if (prop == null) { Debug.LogError($"[DungeonWarfare] Missing field '{field}' on {target}"); return; }
+            prop.stringValue = value;
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void SetObjectArray(Object target, string field, Object[] values)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(field);
+            if (prop == null) { Debug.LogError($"[DungeonWarfare] Missing array '{field}' on {target}"); return; }
+            prop.arraySize = values.Length;
+            for (int i = 0; i < values.Length; i++)
+                prop.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
             so.ApplyModifiedPropertiesWithoutUndo();
         }
 

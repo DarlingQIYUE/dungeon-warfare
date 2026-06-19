@@ -187,6 +187,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.PathFollower
   speed: 2
   lookahead: 0.35
+  knockDecay: 6
   debugDraw: 1
 --- !u!114 &862039247894182537
 MonoBehaviour:
@@ -202,6 +203,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.Enemy
   rewardGold: 5
   damageToBase: 1
+  wallSlamDamagePerSpeed: 2
 --- !u!114 &8036284577463423051
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -225,7 +225,8 @@ namespace DungeonWarfare
             }
 
             // Build menu (only while actively playing)
-            if (flow.State == GameState.Playing && placer != null && placer.AvailableTower != null)
+            if (flow.State == GameState.Playing && placer != null &&
+                placer.AvailableTowers != null && placer.AvailableTowers.Count > 0)
                 DrawBuildMenu(x, ref y, w);
 
             // Remove panel for a selected building (in the sidebar, so its button
@@ -373,12 +374,15 @@ namespace DungeonWarfare
         {
             GUI.Label(new Rect(x, y, w, 22), "建造 BUILD", sideHeader); y += 26f;
 
-            Tower t = placer.AvailableTower;
-            if (t != null)
+            var towers = placer.AvailableTowers;
+            for (int i = 0; i < towers.Count; i++)
             {
-                DrawBuildButton(new Rect(x, y, w, 54f), $"炮塔\n${t.Cost}", t.Cost,
-                    placer.IsPlacingTower, placer.SelectTower,
-                    $"伤害 {t.Damage:0}\n攻击 每 {t.FireInterval:0.0}s\n射程 {t.Range:0.0}");
+                Tower t = towers[i];
+                if (t == null) continue;
+                int idx = i; // capture for the click closure
+                DrawBuildButton(new Rect(x, y, w, 54f), $"{t.DisplayName}\n${t.Cost}", t.Cost,
+                    placer.IsSelectedTower(idx), () => placer.SelectTower(idx),
+                    $"伤害 {t.Damage:0}\n攻速 每 {t.FireInterval:0.0}s\n射程 {t.Range:0.0}");
                 y += 60f;
             }
 

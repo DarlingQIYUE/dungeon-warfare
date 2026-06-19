@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,7 +16,7 @@ namespace DungeonWarfare
     {
         private enum BuildKind { None, Tower, Terrain }
 
-        [SerializeField] private Tower towerPrefab;
+        [SerializeField] private Tower[] towerPrefabs; // buildable tower types (auto-listed in the UI)
         [SerializeField] private Terrain terrainPrefab;
         [SerializeField] private GridSystem grid;
         [SerializeField] private Camera cam;
@@ -38,14 +39,23 @@ namespace DungeonWarfare
 
         private bool hasSelection;
         private Vector2Int selectedCell;
+        private int selectedTowerIndex; // which entry of towerPrefabs is being placed
 
         // ---- build API ----
-        public Tower AvailableTower => towerPrefab;
+        public IReadOnlyList<Tower> AvailableTowers => towerPrefabs;
         public Terrain AvailableTerrain => terrainPrefab;
         public bool IsPlacing => kind != BuildKind.None;
         public bool IsPlacingTower => kind == BuildKind.Tower;
         public bool IsPlacingTerrain => kind == BuildKind.Terrain;
-        public void SelectTower() { ClearSelection(); kind = BuildKind.Tower; }
+
+        /// <summary>The tower prefab currently chosen for placement (null if none).</summary>
+        public Tower ActiveTower =>
+            towerPrefabs != null && selectedTowerIndex >= 0 && selectedTowerIndex < towerPrefabs.Length
+                ? towerPrefabs[selectedTowerIndex] : null;
+        /// <summary>True when placing the tower at index <paramref name="i"/> (for button highlight).</summary>
+        public bool IsSelectedTower(int i) => kind == BuildKind.Tower && selectedTowerIndex == i;
+
+        public void SelectTower(int i) { ClearSelection(); kind = BuildKind.Tower; selectedTowerIndex = i; }
         public void SelectTerrain() { ClearSelection(); kind = BuildKind.Terrain; }
 
         public void CancelPlacement()
@@ -68,7 +78,8 @@ namespace DungeonWarfare
             get
             {
                 if (!hasSelection) return 0;
-                int cost = grid.HasTower(selectedCell) ? towerPrefab.Cost : terrainPrefab.Cost;
+                Tower t = SelectedTower;
+                int cost = grid.HasTower(selectedCell) ? (t != null ? t.Cost : 0) : terrainPrefab.Cost;
                 return Mathf.FloorToInt(cost * refundRate);
             }
         }
@@ -117,8 +128,31 @@ namespace DungeonWarfare
             if (cam == null) cam = Camera.main;
             if (game == null) game = GameManager.Instance;
             if (grid == null) grid = FindFirstObjectByType<GridSystem>();
-            if (towerPrefab == null) towerPrefab = Resources.Load<Tower>("Tower");
+            towerPrefabs = ResolveTowerPrefabs(towerPrefabs);
             if (terrainPrefab == null) terrainPrefab = Resources.Load<Terrain>("Terrain");
+        }
+
+        /// <summary>
+        /// Keep only the valid wired tower entries; if none survive, load the known
+        /// towers from Resources. The build wires prefab references unreliably (hence
+        /// the Resources-as-source-of-truth note in the scene builder), and an array
+        /// of null entries would otherwise leave the build menu empty.
+        /// </summary>
+        private static Tower[] ResolveTowerPrefabs(Tower[] wired)
+        {
+            var list = new List<Tower>();
+            if (wired != null)
+                foreach (Tower t in wired)
+                    if (t != null) list.Add(t);
+
+            if (list.Count == 0)
+            {
+                Tower basic = Resources.Load<Tower>("Tower");
+                Tower bomb = Resources.Load<Tower>("BombTower");
+                if (basic != null) list.Add(basic);
+                if (bomb != null) list.Add(bomb);
+            }
+            return list.ToArray();
         }
 
         private void Start()
@@ -172,21 +206,24 @@ namespace DungeonWarfare
 
         private void UpdateTowerPlacement(Vector2Int cell)
         {
-            bool affordable = game == null || game.Gold >= towerPrefab.Cost;
+            Tower prefab = ActiveTower;
+            if (prefab == null) { HideRange(); return; }
+
+            bool affordable = game == null || game.Gold >= prefab.Cost;
             bool valid = grid.CanPlace(cell) && affordable;
 
             UpdateGhost(cell, valid);
 
             if (grid.IsInside(cell))
-                ShowRangeAt(grid.CellToWorldCenter(cell), towerPrefab.Range);
+                ShowRangeAt(grid.CellToWorldCenter(cell), prefab.Range);
             else
                 HideRange();
 
             if (valid && Mouse.current.leftButton.wasPressedThisFrame)
             {
-                if (game == null || game.TrySpend(towerPrefab.Cost))
+                if (game == null || game.TrySpend(prefab.Cost))
                 {
-                    Instantiate(towerPrefab, grid.CellToWorldCenter(cell), Quaternion.identity);
+                    Instantiate(prefab, grid.CellToWorldCenter(cell), Quaternion.identity);
                     grid.AddTower(cell);
                 }
             }
@@ -258,8 +295,9 @@ namespace DungeonWarfare
 
             // Show range for the selected tower (persistent), else the hovered one.
             Vector2Int rangeCell = hasSelection ? selectedCell : cell;
-            if (grid.IsInside(rangeCell) && grid.HasTower(rangeCell))
-                ShowRangeAt(grid.CellToWorldCenter(rangeCell), towerPrefab.Range);
+            Tower at = grid.IsInside(rangeCell) && grid.HasTower(rangeCell) ? FindAtCell<Tower>(rangeCell) : null;
+            if (at != null)
+                ShowRangeAt(grid.CellToWorldCenter(rangeCell), at.Range);
             else
                 HideRange();
         }

@@ -45,6 +45,15 @@ namespace DungeonWarfare
 
             health.Died -= OnDied;
             health.Died += OnDied;
+
+            follower.WallSlammed -= OnWallSlammed;
+            follower.WallSlammed += OnWallSlammed;
+        }
+
+        private void OnWallSlammed(float impactSpeed)
+        {
+            if (despawned) return;
+            health.TakeDamage(impactSpeed * DebugTuning.WallSlamPerSpeed);
         }
 
         private void Update()
@@ -69,6 +78,7 @@ namespace DungeonWarfare
         {
             despawned = true;
             health.Died -= OnDied;
+            follower.WallSlammed -= OnWallSlammed;
             Despawned?.Invoke(this);
             Destroy(gameObject);
         }

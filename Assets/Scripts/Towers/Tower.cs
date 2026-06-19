@@ -9,6 +9,7 @@ namespace DungeonWarfare
     /// </summary>
     public class Tower : MonoBehaviour
     {
+        [SerializeField] private string displayName = "炮塔";
         [SerializeField] private int cost = 30;
         [SerializeField] private float range = 4f;
         [SerializeField] private float fireInterval = 0.6f;
@@ -16,6 +17,7 @@ namespace DungeonWarfare
         [SerializeField] private Projectile projectilePrefab;
         [SerializeField] private Transform muzzle; // optional spawn point; defaults to self
 
+        public string DisplayName => displayName;
         public int Cost => cost;
         public float Range => range;
         public float Damage => damage;

@@ -12,9 +12,9 @@ namespace DungeonWarfare
         [SerializeField] private float speed = 11f;
         [SerializeField] private float maxLifetime = 3f;
 
-        private float damage;
-        private Health target;
-        private Vector3 lastKnownPos;
+        protected float damage;
+        protected Health target;
+        protected Vector3 lastKnownPos;
         private float life;
 
         public void Launch(Health targetHealth, float damageAmount)
@@ -39,13 +39,19 @@ namespace DungeonWarfare
 
             if (dist <= step || dist < 0.05f)
             {
-                if (target != null && !target.IsDead)
-                    target.TakeDamage(damage);
+                Detonate();
                 Destroy(gameObject);
                 return;
             }
 
             transform.position += toTarget / dist * step;
+        }
+
+        /// <summary>Effect on reaching the target point. Base: single-target hit.</summary>
+        protected virtual void Detonate()
+        {
+            if (target != null && !target.IsDead)
+                target.TakeDamage(damage);
         }
     }
 }
