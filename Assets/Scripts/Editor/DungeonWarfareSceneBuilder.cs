@@ -34,6 +34,7 @@ namespace DungeonWarfare.EditorTools
         private const string AimProjectilePrefabPath = PrefabDir + "/AimProjectile.prefab";
         private const string LightningTowerPrefabPath = PrefabDir + "/LightningTower.prefab";
         private const string LightningProjectilePrefabPath = PrefabDir + "/LightningProjectile.prefab";
+        private const string LaserTowerPrefabPath = PrefabDir + "/LaserTower.prefab";
         private const string TerrainPrefabPath = PrefabDir + "/Terrain.prefab";
         private const string ScenePath = SceneDir + "/DungeonWarfare.unity";
 
@@ -63,11 +64,13 @@ namespace DungeonWarfare.EditorTools
             Tower aimTowerPrefab = EnsureAimTowerPrefab(square, aimProjectilePrefab);
             LightningProjectile lightningProjectilePrefab = EnsureLightningProjectilePrefab();
             Tower lightningTowerPrefab = EnsureLightningTowerPrefab(square, lightningProjectilePrefab);
+            Tower laserTowerPrefab = EnsureLaserTowerPrefab(square);
             Terrain terrainPrefab = EnsureTerrainPrefab(square);
             Enemy enemyPrefab = EnsureEnemyPrefab(circle, square);
 
             BuildScene(square, circle, enemyPrefab,
-                       new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab, aimTowerPrefab, lightningTowerPrefab },
+                       new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab, aimTowerPrefab,
+                               lightningTowerPrefab, laserTowerPrefab },
                        terrainPrefab);
 
             AssetDatabase.SaveAssets();
@@ -411,6 +414,35 @@ namespace DungeonWarfare.EditorTools
             SetFloat(tower, "damage", 8f);         // low per-shot; value comes from chaining
 
             Tower asset = PrefabUtility.SaveAsPrefabAsset(go, LightningTowerPrefabPath).GetComponent<Tower>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Tower EnsureLaserTowerPrefab(Sprite square)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("LaserTower");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.9f, 0.35f, 0.3f); // red = laser
+            sr.sortingOrder = 3;
+
+            var hitbox = go.AddComponent<BoxCollider2D>();
+            hitbox.size = new Vector2(1.1f, 1.1f);
+            hitbox.isTrigger = true;
+
+            // No projectile: the laser is a continuous beam (LaserTower drives its own
+            // damage + LineRenderer). Base dps lives in the tower's damage field.
+            Tower tower = go.AddComponent<LaserTower>();
+            SetString(tower, "displayName", "激光");
+            SetInt(tower, "cost", 55);
+            SetFloat(tower, "range", 4f);
+            SetFloat(tower, "damage", 6f); // base dps; ramps up via DebugTuning
+
+            Tower asset = PrefabUtility.SaveAsPrefabAsset(go, LaserTowerPrefabPath).GetComponent<Tower>();
             Object.DestroyImmediate(go);
             return asset;
         }

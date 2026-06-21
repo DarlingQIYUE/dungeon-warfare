@@ -26,5 +26,9 @@ namespace DungeonWarfare
         public static int ChainJumps = 3;          // extra hops after the first target
         public static float ChainFalloff = 0.7f;   // damage multiplier per hop
         public static float ChainJumpRange = 2.5f; // max distance between consecutive targets
+
+        // --- A32Lazer: ramping laser beam --- (base dps = tower damage)
+        public static float LaserRampTime = 3f;       // seconds of continuous fire to reach max
+        public static float LaserRampMultiplier = 4f; // dps multiplier at full ramp
     }
 }

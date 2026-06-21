@@ -37,7 +37,7 @@ namespace DungeonWarfare
                 projectilePrefab = Resources.Load<Projectile>("Projectile");
         }
 
-        private void Update()
+        protected virtual void Update()
         {
             cooldown -= Time.deltaTime;
             if (cooldown > 0f) return;
@@ -50,7 +50,7 @@ namespace DungeonWarfare
         }
 
         /// <summary>The in-range enemy closest to the exit (least route distance left).</summary>
-        private Health FindTarget()
+        protected Health FindTarget()
         {
             Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, range);
             Health best = null;

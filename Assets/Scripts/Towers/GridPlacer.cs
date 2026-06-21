@@ -152,11 +152,13 @@ namespace DungeonWarfare
                 Tower injection = Resources.Load<Tower>("InjectionTower");
                 Tower aim = Resources.Load<Tower>("AimTower");
                 Tower lightning = Resources.Load<Tower>("LightningTower");
+                Tower laser = Resources.Load<Tower>("LaserTower");
                 if (basic != null) list.Add(basic);
                 if (bomb != null) list.Add(bomb);
                 if (injection != null) list.Add(injection);
                 if (aim != null) list.Add(aim);
                 if (lightning != null) list.Add(lightning);
+                if (laser != null) list.Add(laser);
             }
             return list.ToArray();
         }
