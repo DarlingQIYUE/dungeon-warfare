@@ -79,47 +79,49 @@ namespace DungeonWarfare
         }
 
         /// <summary>
-        /// For cone weapons: the aim direction whose fan (width <paramref name="coneAngleDeg"/>)
-        /// covers the MOST in-range enemies — so the cone catches as many as possible rather
-        /// than centering on the frontmost one. Returns <see cref="Vector3.zero"/> if no enemy
-        /// is in range. O(n²) over in-range enemies (n is small).
+        /// Cone aim over CURRENT enemy positions: anchors the fan's leading edge on the
+        /// frontmost (closest-to-exit) enemy and opens toward the side holding more, so it
+        /// reliably catches the leader while covering as many followers as possible. For
+        /// instant cone weapons (no travel time). <see cref="Vector3.zero"/> if none in range.
         /// </summary>
-        protected Vector3 BestConeAim(float coneAngleDeg)
+        protected Vector3 LeaderAnchoredAim(float coneAngleDeg)
         {
-            var angles = new List<float>();
+            var bearings = new List<float>();
+            float leaderBearing = 0f, leaderDist = float.MaxValue;
+
             foreach (Collider2D col in Physics2D.OverlapCircleAll(transform.position, range))
             {
-                if (!col.TryGetComponent(out Enemy _)) continue;
+                if (!col.TryGetComponent(out Enemy enemy)) continue;
                 if (!col.TryGetComponent(out Health h) || h.IsDead) continue;
                 Vector3 to = col.transform.position - transform.position;
                 if (to.sqrMagnitude < 1e-6f) continue;
-                angles.Add(Mathf.Atan2(to.y, to.x) * Mathf.Rad2Deg);
+
+                float bearing = Mathf.Atan2(to.y, to.x) * Mathf.Rad2Deg;
+                bearings.Add(bearing);
+                if (enemy.DistanceToExit < leaderDist) { leaderDist = enemy.DistanceToExit; leaderBearing = bearing; }
             }
-            return BestAimOverAngles(angles, coneAngleDeg);
+            return AnchorAim(bearings, leaderBearing, coneAngleDeg);
         }
 
         /// <summary>
-        /// Of the given enemy bearings (degrees), the aim direction whose fan of width
-        /// <paramref name="coneAngleDeg"/> covers the most. <see cref="Vector3.zero"/> if empty.
-        /// Subclasses can predict future bearings and pass them here for lead-aiming.
+        /// Place <paramref name="leaderBearing"/> on one fan edge and open the fan (width
+        /// <paramref name="coneAngleDeg"/>) toward whichever side holds more of
+        /// <paramref name="bearings"/>. Subclasses can pass predicted bearings for lead-aiming.
+        /// <see cref="Vector3.zero"/> if empty.
         /// </summary>
-        protected static Vector3 BestAimOverAngles(List<float> angles, float coneAngleDeg)
+        protected static Vector3 AnchorAim(List<float> bearings, float leaderBearing, float coneAngleDeg)
         {
-            if (angles.Count == 0) return Vector3.zero;
+            if (bearings.Count == 0) return Vector3.zero;
 
-            // Slide a window of width coneAngleDeg starting at each bearing; the one
-            // covering the most (with 360° wraparound) wins.
-            int best = 0;
-            float bestStart = angles[0];
-            foreach (float start in angles)
+            int countHigh = 0, countLow = 0; // [leader, leader+cone] vs [leader-cone, leader]
+            foreach (float b in bearings)
             {
-                int count = 0;
-                foreach (float a in angles)
-                    if (Mathf.Repeat(a - start, 360f) <= coneAngleDeg) count++;
-                if (count > best) { best = count; bestStart = start; }
+                if (Mathf.Repeat(b - leaderBearing, 360f) <= coneAngleDeg) countHigh++;
+                if (Mathf.Repeat(leaderBearing - b, 360f) <= coneAngleDeg) countLow++;
             }
 
-            float aimDeg = (bestStart + coneAngleDeg * 0.5f) * Mathf.Deg2Rad;
+            float aimDeg = (countHigh >= countLow ? leaderBearing + coneAngleDeg * 0.5f
+                                                  : leaderBearing - coneAngleDeg * 0.5f) * Mathf.Deg2Rad;
             return new Vector3(Mathf.Cos(aimDeg), Mathf.Sin(aimDeg), 0f);
         }
 

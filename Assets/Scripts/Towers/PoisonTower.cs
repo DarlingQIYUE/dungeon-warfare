@@ -14,9 +14,7 @@ namespace DungeonWarfare
     {
         protected override void Fire(Health target)
         {
-            // Aim where the most enemies will BE when the wave front reaches them (the wave
-            // takes time to travel, so aiming at current positions misses movers).
-            Vector3 aim = BestAimOverAngles(PredictedBearings(), DebugTuning.PoisonConeAngle);
+            Vector3 aim = ComputeAim();
             if (aim == Vector3.zero) return;
             float aimDeg = Mathf.Atan2(aim.y, aim.x) * Mathf.Rad2Deg;
 
@@ -25,17 +23,24 @@ namespace DungeonWarfare
         }
 
         /// <summary>
-        /// Each in-range enemy's predicted bearing at the moment the wave front would reach
-        /// its current distance (time from the wave's ease-out model × the enemy's velocity).
+        /// Aim so the fan's leading edge sits on the frontmost (closest-to-exit) enemy — the
+        /// one most likely to slip away — and the fan opens toward the side with more enemies
+        /// (i.e. back over the trailing pack). Bearings are predicted to where each enemy will
+        /// be when the wave front reaches it (ease-out timing × base speed), so movers aren't
+        /// missed. Returns <see cref="Vector3.zero"/> if no enemy is in range.
         /// </summary>
-        private List<float> PredictedBearings()
+        private Vector3 ComputeAim()
         {
-            var bearings = new List<float>();
+            float cone = DebugTuning.PoisonConeAngle;
             float total = Range + DebugTuning.PoisonWaveWidth; // front travels to maxRange+width
+
+            var bearings = new List<float>();
+            float leaderBearing = 0f;
+            float leaderDist = float.MaxValue;
 
             foreach (Collider2D col in Physics2D.OverlapCircleAll(transform.position, Range))
             {
-                if (!col.TryGetComponent(out Enemy _)) continue;
+                if (!col.TryGetComponent(out Enemy enemy)) continue;
                 if (!col.TryGetComponent(out Health h) || h.IsDead) continue;
 
                 Vector3 to = col.transform.position - transform.position;
@@ -43,18 +48,23 @@ namespace DungeonWarfare
                 float d = to.magnitude;
                 if (d < 1e-4f) continue;
 
-                // Invert the wave's ease-out (front = total·(1-(1-t')²)) to get arrival time.
+                // Invert the wave's ease-out (front = total·(1-(1-t')²)) to get arrival time,
+                // then lead at the enemy's BASE speed (a slow may wear off before it arrives).
                 float e = Mathf.Clamp01(d / total);
                 float t = PoisonWave.ExpandTime * (1f - Mathf.Sqrt(1f - e));
-
                 Vector3 vel = col.TryGetComponent(out PathFollower pf) ? pf.BaseVelocity : Vector3.zero;
                 Vector3 predicted = col.transform.position + vel * t - transform.position;
                 predicted.z = 0f;
                 if (predicted.sqrMagnitude < 1e-6f) continue;
 
-                bearings.Add(Mathf.Atan2(predicted.y, predicted.x) * Mathf.Rad2Deg);
+                float bearing = Mathf.Atan2(predicted.y, predicted.x) * Mathf.Rad2Deg;
+                bearings.Add(bearing);
+
+                if (enemy.DistanceToExit < leaderDist) { leaderDist = enemy.DistanceToExit; leaderBearing = bearing; }
             }
-            return bearings;
+
+            // Same leader-anchored opening as the flame, but over predicted bearings.
+            return AnchorAim(bearings, leaderBearing, cone);
         }
     }
 }

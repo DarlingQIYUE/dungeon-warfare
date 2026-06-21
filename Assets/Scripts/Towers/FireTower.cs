@@ -32,8 +32,8 @@ namespace DungeonWarfare
 
         protected override void Update()
         {
-            // Aim the flame where it covers the most enemies, not at the frontmost one.
-            Vector3 aim = BestConeAim(DebugTuning.FireConeAngle);
+            // Anchor the flame's leading edge on the frontmost enemy, opening to cover the most.
+            Vector3 aim = LeaderAnchoredAim(DebugTuning.FireConeAngle);
             if (aim == Vector3.zero) { if (coneRenderer != null) coneRenderer.enabled = false; return; }
             float half = DebugTuning.FireConeAngle * 0.5f;
 
