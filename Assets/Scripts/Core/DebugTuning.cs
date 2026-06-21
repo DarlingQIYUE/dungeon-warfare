@@ -43,5 +43,11 @@ namespace DungeonWarfare
 
         // --- A33Fire: flamethrower cone --- (cone dps = tower damage)
         public static float FireConeAngle = 60f;       // small fan width (degrees)
+
+        // --- A33Mine: auto-laid mines --- (blast damage = tower damage)
+        public static int MineMaxLive = 6;             // max simultaneous live mines per tower
+        public static float MineTriggerRadius = 0.35f; // proximity that sets a mine off
+        public static float MineBlastRadius = 1f;      // AoE radius on detonation
+        public static float MineMinSpacing = 0.25f;    // preferred gap between mines (low = allow piling)
     }
 }

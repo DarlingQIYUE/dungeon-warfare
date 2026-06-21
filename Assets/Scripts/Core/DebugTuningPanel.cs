@@ -24,6 +24,7 @@ namespace DungeonWarfare
         private const string VeteranName = "老兵";
         private const string PoisonName = "毒素炮";
         private const string FireName = "火焰炮";
+        private const string MineName = "布雷塔";
 
         private class TowerStat { public string name; public float damage, range, fire; }
 
@@ -145,6 +146,13 @@ namespace DungeonWarfare
             {
                 DebugTuning.FireConeAngle = Row("扇形角度", DebugTuning.FireConeAngle, 20f, 150f);
             }
+            else if (towerName == MineName)
+            {
+                DebugTuning.MineMaxLive       = Mathf.RoundToInt(Row("最大存量", DebugTuning.MineMaxLive, 1f, 20f));
+                DebugTuning.MineTriggerRadius = Row("触发半径", DebugTuning.MineTriggerRadius, 0.1f, 1f);
+                DebugTuning.MineBlastRadius   = Row("爆炸半径", DebugTuning.MineBlastRadius, 0.3f, 2.5f);
+                DebugTuning.MineMinSpacing    = Row("最小间距", DebugTuning.MineMinSpacing, 0f, 2f);
+            }
         }
 
         /// <summary>How many extra rows a type adds, for sizing the panel.</summary>
@@ -156,7 +164,8 @@ namespace DungeonWarfare
             towerName == LaserName ? 2 :
             towerName == VeteranName ? 2 :
             towerName == PoisonName ? 4 :
-            towerName == FireName ? 1 : 0;
+            towerName == FireName ? 1 :
+            towerName == MineName ? 4 : 0;
 
         private float PanelHeight()
         {

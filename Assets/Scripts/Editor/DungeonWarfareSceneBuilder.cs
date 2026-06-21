@@ -39,6 +39,8 @@ namespace DungeonWarfare.EditorTools
         private const string VeteranProjectilePrefabPath = PrefabDir + "/VeteranProjectile.prefab";
         private const string PoisonTowerPrefabPath = PrefabDir + "/PoisonTower.prefab";
         private const string FireTowerPrefabPath = PrefabDir + "/FireTower.prefab";
+        private const string MineTowerPrefabPath = PrefabDir + "/MineTower.prefab";
+        private const string MinePrefabPath = PrefabDir + "/Mine.prefab";
         private const string TerrainPrefabPath = PrefabDir + "/Terrain.prefab";
         private const string ScenePath = SceneDir + "/DungeonWarfare.unity";
 
@@ -73,13 +75,15 @@ namespace DungeonWarfare.EditorTools
             Tower veteranTowerPrefab = EnsureVeteranTowerPrefab(square, veteranProjectilePrefab);
             Tower poisonTowerPrefab = EnsurePoisonTowerPrefab(square);
             Tower fireTowerPrefab = EnsureFireTowerPrefab(square);
+            Mine minePrefab = EnsureMinePrefab(circle);
+            Tower mineTowerPrefab = EnsureMineTowerPrefab(square, minePrefab);
             Terrain terrainPrefab = EnsureTerrainPrefab(square);
             Enemy enemyPrefab = EnsureEnemyPrefab(circle, square);
 
             BuildScene(square, circle, enemyPrefab,
                        new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab, aimTowerPrefab,
                                lightningTowerPrefab, laserTowerPrefab, veteranTowerPrefab, poisonTowerPrefab,
-                               fireTowerPrefab },
+                               fireTowerPrefab, mineTowerPrefab },
                        terrainPrefab);
 
             AssetDatabase.SaveAssets();
@@ -560,6 +564,55 @@ namespace DungeonWarfare.EditorTools
             SetFloat(tower, "damage", 20f); // high continuous dps
 
             Tower asset = PrefabUtility.SaveAsPrefabAsset(go, FireTowerPrefabPath).GetComponent<Tower>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Mine EnsureMinePrefab(Sprite circle)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("Mine");
+            go.transform.localScale = new Vector3(0.2f, 0.2f, 1f); // smaller than a cell (0.5)
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = circle;
+            sr.color = new Color(0.25f, 0.22f, 0.2f); // dark, low-key on the ground
+            sr.sortingOrder = 1; // above tiles, below units
+
+            go.AddComponent<Mine>();
+
+            Mine asset = PrefabUtility.SaveAsPrefabAsset(go, MinePrefabPath).GetComponent<Mine>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Tower EnsureMineTowerPrefab(Sprite square, Mine minePrefab)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("MineTower");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.5f, 0.45f, 0.3f); // drab khaki = minelayer
+            sr.sortingOrder = 3;
+
+            var hitbox = go.AddComponent<BoxCollider2D>();
+            hitbox.size = new Vector2(1.1f, 1.1f);
+            hitbox.isTrigger = true;
+
+            // No projectile: lays Mine entities over time. Blast damage = tower damage.
+            Tower tower = go.AddComponent<MineTower>();
+            SetRef(tower, "minePrefab", minePrefab);
+            SetString(tower, "displayName", "布雷塔");
+            SetInt(tower, "cost", 55);
+            SetFloat(tower, "range", 3.5f);
+            SetFloat(tower, "fireInterval", 1.5f); // mine-laying interval
+            SetFloat(tower, "damage", 30f);        // blast damage per mine
+
+            Tower asset = PrefabUtility.SaveAsPrefabAsset(go, MineTowerPrefabPath).GetComponent<Tower>();
             Object.DestroyImmediate(go);
             return asset;
         }

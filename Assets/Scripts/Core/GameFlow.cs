@@ -98,6 +98,7 @@ namespace DungeonWarfare
             foreach (Tower t in FindObjectsByType<Tower>(FindObjectsSortMode.None)) Destroy(t.gameObject);
             foreach (Terrain ter in FindObjectsByType<Terrain>(FindObjectsSortMode.None)) Destroy(ter.gameObject);
             foreach (Projectile p in FindObjectsByType<Projectile>(FindObjectsSortMode.None)) Destroy(p.gameObject);
+            foreach (Mine m in FindObjectsByType<Mine>(FindObjectsSortMode.None)) Destroy(m.gameObject); // independent of towers
             if (grid != null) grid.ClearBuildings();
         }
 

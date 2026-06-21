@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &491854873
+--- !u!1 &787621866
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,92 +127,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 491854875}
-  - component: {fileID: 491854874}
-  m_Layer: 0
-  m_Name: Sidebar Camera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!20 &491854874
-Camera:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 491854873}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.1, g: 0.11, b: 0.14, a: 1}
-  m_projectionMatrixMode: 1
-  m_GateFitMode: 2
-  m_FOVAxisMode: 0
-  m_Iso: 200
-  m_ShutterSpeed: 0.005
-  m_Aperture: 16
-  m_FocusDistance: 10
-  m_FocalLength: 50
-  m_BladeCount: 5
-  m_Curvature: {x: 2, y: 11}
-  m_BarrelClipping: 0.25
-  m_Anamorphism: 0
-  m_SensorSize: {x: 36, y: 24}
-  m_LensShift: {x: 0, y: 0}
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60
-  orthographic: 1
-  orthographic size: 5
-  m_Depth: 1
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 0
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
---- !u!4 &491854875
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 491854873}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 100, y: 100, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &853259366
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 853259369}
-  - component: {fileID: 853259367}
-  - component: {fileID: 853259368}
+  - component: {fileID: 787621869}
+  - component: {fileID: 787621867}
+  - component: {fileID: 787621868}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -220,13 +137,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!20 &853259367
+--- !u!20 &787621867
 Camera:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 853259366}
+  m_GameObject: {fileID: 787621866}
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
@@ -271,30 +188,30 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &853259368
+--- !u!114 &787621868
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 853259366}
+  m_GameObject: {fileID: 787621866}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87da661b589c6f14bb5a61db59e17f5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameViewportLayout
-  worldCamera: {fileID: 853259367}
-  sidebarCamera: {fileID: 491854874}
+  worldCamera: {fileID: 787621867}
+  sidebarCamera: {fileID: 1690761145}
   aspectWidth: 16
   aspectHeight: 9
   sidebarUnits: 2
---- !u!4 &853259369
+--- !u!4 &787621869
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 853259366}
+  m_GameObject: {fileID: 787621866}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
@@ -303,7 +220,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1397388770
+--- !u!1 &1530243524
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -311,8 +228,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1397388772}
-  - component: {fileID: 1397388771}
+  - component: {fileID: 1530243526}
+  - component: {fileID: 1530243525}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -320,13 +237,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1397388771
+--- !u!114 &1530243525
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1397388770}
+  m_GameObject: {fileID: 1530243524}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 579bb819fc2e0dd42a4b13db6d1547c8, type: 3}
@@ -621,13 +538,13 @@ MonoBehaviour:
   tileSprite: {fileID: 21300000, guid: bd3e5ed04acf348489a34833115044cb, type: 3}
   buildableColor: {r: 0.4, g: 0.6, b: 0.9, a: 0.14}
   pathColor: {r: 0.45, g: 0.36, b: 0.26, a: 0.85}
---- !u!4 &1397388772
+--- !u!4 &1530243526
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1397388770}
+  m_GameObject: {fileID: 1530243524}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -636,7 +553,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1786749550
+--- !u!1 &1652045624
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -644,12 +561,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1786749556}
-  - component: {fileID: 1786749555}
-  - component: {fileID: 1786749554}
-  - component: {fileID: 1786749553}
-  - component: {fileID: 1786749552}
-  - component: {fileID: 1786749551}
+  - component: {fileID: 1652045630}
+  - component: {fileID: 1652045629}
+  - component: {fileID: 1652045628}
+  - component: {fileID: 1652045627}
+  - component: {fileID: 1652045626}
+  - component: {fileID: 1652045625}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -657,45 +574,45 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1786749551
+--- !u!114 &1652045625
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1786749550}
+  m_GameObject: {fileID: 1652045624}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 94b486c8dea08c249a66efc87c0f5bfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameUI
-  flow: {fileID: 1786749552}
-  game: {fileID: 1786749555}
-  waves: {fileID: 1786749554}
-  placer: {fileID: 1786749553}
-  sidebarCamera: {fileID: 491854874}
---- !u!114 &1786749552
+  flow: {fileID: 1652045626}
+  game: {fileID: 1652045629}
+  waves: {fileID: 1652045628}
+  placer: {fileID: 1652045627}
+  sidebarCamera: {fileID: 1690761145}
+--- !u!114 &1652045626
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1786749550}
+  m_GameObject: {fileID: 1652045624}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ade392bfa13d884caad61791becdaf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameFlow
-  game: {fileID: 1786749555}
-  waves: {fileID: 1786749554}
-  grid: {fileID: 1397388771}
---- !u!114 &1786749553
+  game: {fileID: 1652045629}
+  waves: {fileID: 1652045628}
+  grid: {fileID: 1530243525}
+--- !u!114 &1652045627
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1786749550}
+  m_GameObject: {fileID: 1652045624}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45b41ca9b14a5ef4c8fe4c1e79f9b27c, type: 3}
@@ -711,31 +628,32 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
   terrainPrefab: {fileID: 0}
-  grid: {fileID: 1397388771}
-  cam: {fileID: 853259367}
-  game: {fileID: 1786749555}
+  grid: {fileID: 1530243525}
+  cam: {fileID: 787621867}
+  game: {fileID: 1652045629}
   ghostSprite: {fileID: 21300000, guid: bd3e5ed04acf348489a34833115044cb, type: 3}
   okColor: {r: 0.3, g: 1, b: 0.3, a: 0.45}
   badColor: {r: 1, g: 0.3, b: 0.3, a: 0.45}
   rangeSprite: {fileID: 21300000, guid: fe299d18606626242b2876180a7ba47b, type: 3}
   rangeColor: {r: 1, g: 1, b: 0.4, a: 0.13}
   refundRate: 0.6
---- !u!114 &1786749554
+--- !u!114 &1652045628
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1786749550}
+  m_GameObject: {fileID: 1652045624}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd583ad1d20a59c4890dd6747f80943d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.WaveManager
   enemyPrefab: {fileID: 0}
-  grid: {fileID: 1397388771}
-  game: {fileID: 1786749555}
+  grid: {fileID: 1530243525}
+  game: {fileID: 1652045629}
   totalWaves: 8
   enemiesPerWave: 10
   baseHealth: 30
@@ -743,13 +661,13 @@ MonoBehaviour:
   spawnInterval: 0.8
   betweenWaveDelay: 8
   earlyStartGoldPerSecond: 5
---- !u!114 &1786749555
+--- !u!114 &1652045629
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1786749550}
+  m_GameObject: {fileID: 1652045624}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e10156c8ac204674bb3cf5d530f3a4f6, type: 3}
@@ -757,16 +675,99 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.GameManager
   startingGold: 100
   startingLives: 20
---- !u!4 &1786749556
+--- !u!4 &1652045630
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1786749550}
+  m_GameObject: {fileID: 1652045624}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1690761144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1690761146}
+  - component: {fileID: 1690761145}
+  m_Layer: 0
+  m_Name: Sidebar Camera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!20 &1690761145
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690761144}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.1, g: 0.11, b: 0.14, a: 1}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: 1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 0
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &1690761146
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1690761144}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 100, y: 100, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -776,7 +777,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1397388772}
-  - {fileID: 853259369}
-  - {fileID: 491854875}
-  - {fileID: 1786749556}
+  - {fileID: 1530243526}
+  - {fileID: 787621869}
+  - {fileID: 1690761146}
+  - {fileID: 1652045630}
