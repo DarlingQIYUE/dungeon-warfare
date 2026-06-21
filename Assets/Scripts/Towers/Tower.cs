@@ -23,6 +23,12 @@ namespace DungeonWarfare
         public float Damage => damage;
         public float FireInterval => fireInterval;
 
+        // Live tuning (DebugTuningPanel): adjust combat stats at runtime, then bake
+        // the dialed-in values back into the prefab via the scene builder.
+        public void SetRange(float value) => range = value;
+        public void SetDamage(float value) => damage = value;
+        public void SetFireInterval(float value) => fireInterval = value;
+
         private float cooldown;
 
         private void Awake()

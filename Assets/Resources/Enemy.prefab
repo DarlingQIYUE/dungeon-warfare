@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1425187432381173114}
   - component: {fileID: 658589359369422361}
   - component: {fileID: 6574301219932479392}
+  - component: {fileID: 4797449311784050674}
   - component: {fileID: 862039247894182537}
   - component: {fileID: 8036284577463423051}
   m_Layer: 0
@@ -187,8 +188,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.PathFollower
   speed: 2
   lookahead: 0.35
-  knockDecay: 6
   debugDraw: 1
+--- !u!114 &4797449311784050674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6900696625540571877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edeffe0d7ce71e64f84f90fcb64c2f61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.EnemyStatus
 --- !u!114 &862039247894182537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,7 +215,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DungeonWarfare.Enemy
   rewardGold: 5
   damageToBase: 1
-  wallSlamDamagePerSpeed: 2
 --- !u!114 &8036284577463423051
 MonoBehaviour:
   m_ObjectHideFlags: 0

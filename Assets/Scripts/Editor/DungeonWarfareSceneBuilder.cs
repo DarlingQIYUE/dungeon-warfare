@@ -28,6 +28,8 @@ namespace DungeonWarfare.EditorTools
         private const string BombTowerPrefabPath = PrefabDir + "/BombTower.prefab";
         private const string ProjectilePrefabPath = PrefabDir + "/Projectile.prefab";
         private const string BombProjectilePrefabPath = PrefabDir + "/BombProjectile.prefab";
+        private const string InjectionTowerPrefabPath = PrefabDir + "/InjectionTower.prefab";
+        private const string InjectionProjectilePrefabPath = PrefabDir + "/InjectionProjectile.prefab";
         private const string TerrainPrefabPath = PrefabDir + "/Terrain.prefab";
         private const string ScenePath = SceneDir + "/DungeonWarfare.unity";
 
@@ -51,10 +53,13 @@ namespace DungeonWarfare.EditorTools
             Tower towerPrefab = EnsureTowerPrefab(square, projectilePrefab);
             BombProjectile bombProjectilePrefab = EnsureBombProjectilePrefab(circle);
             Tower bombTowerPrefab = EnsureBombTowerPrefab(square, bombProjectilePrefab);
+            InjectionProjectile injectionProjectilePrefab = EnsureInjectionProjectilePrefab(circle);
+            Tower injectionTowerPrefab = EnsureInjectionTowerPrefab(square, injectionProjectilePrefab);
             Terrain terrainPrefab = EnsureTerrainPrefab(square);
             Enemy enemyPrefab = EnsureEnemyPrefab(circle, square);
 
-            BuildScene(square, circle, enemyPrefab, new[] { towerPrefab, bombTowerPrefab }, terrainPrefab);
+            BuildScene(square, circle, enemyPrefab,
+                       new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab }, terrainPrefab);
 
             AssetDatabase.SaveAssets();
             Debug.Log("[DungeonWarfare] Demo scene built. Press Play -> 开始游戏 -> 第 1 关, then left-click cells to build towers.");
@@ -155,6 +160,7 @@ namespace DungeonWarfare.EditorTools
 
             go.AddComponent<Health>().Configure(30f);
             go.AddComponent<PathFollower>();
+            go.AddComponent<EnemyStatus>(); // holds poison/DOT (and future slow) effects
             Enemy enemy = go.AddComponent<Enemy>();
 
             // Health bar (appears only after first damage); uses the square sprite.
@@ -255,6 +261,54 @@ namespace DungeonWarfare.EditorTools
             SetFloat(tower, "damage", 25f);
 
             Tower asset = PrefabUtility.SaveAsPrefabAsset(go, BombTowerPrefabPath).GetComponent<Tower>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static InjectionProjectile EnsureInjectionProjectilePrefab(Sprite circle)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("InjectionProjectile");
+            go.transform.localScale = new Vector3(0.16f, 0.16f, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = circle;
+            sr.color = new Color(0.45f, 0.95f, 0.35f); // toxic green dart
+            sr.sortingOrder = 4;
+
+            go.AddComponent<InjectionProjectile>(); // direct hit + poison via DebugTuning
+
+            InjectionProjectile asset = PrefabUtility.SaveAsPrefabAsset(go, InjectionProjectilePrefabPath)
+                .GetComponent<InjectionProjectile>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Tower EnsureInjectionTowerPrefab(Sprite square, Projectile projectilePrefab)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("InjectionTower");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.4f, 0.75f, 0.35f); // green = poison
+            sr.sortingOrder = 3;
+
+            var hitbox = go.AddComponent<BoxCollider2D>();
+            hitbox.size = new Vector2(1.1f, 1.1f);
+            hitbox.isTrigger = true;
+
+            Tower tower = go.AddComponent<Tower>();
+            SetRef(tower, "projectilePrefab", projectilePrefab);
+            SetString(tower, "displayName", "病毒注射");
+            SetInt(tower, "cost", 45);
+            SetFloat(tower, "fireInterval", 0.8f); // faster than poison drop interval so stacks build
+            SetFloat(tower, "damage", 2f);         // small direct hit; most damage comes from poison
+
+            Tower asset = PrefabUtility.SaveAsPrefabAsset(go, InjectionTowerPrefabPath).GetComponent<Tower>();
             Object.DestroyImmediate(go);
             return asset;
         }

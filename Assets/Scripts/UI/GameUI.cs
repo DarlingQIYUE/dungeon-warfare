@@ -204,18 +204,18 @@ namespace DungeonWarfare
 
             if (game != null)
             {
-                GUI.Label(new Rect(x, y, w, 20), "金币 GOLD", sideHeader); y += 22f;
-                GUI.Label(new Rect(x, y, w, 34), $"{game.Gold}", sideValue); y += 38f;
-                GUI.Label(new Rect(x, y, w, 20), "生命 LIVES", sideHeader); y += 22f;
-                GUI.Label(new Rect(x, y, w, 34), $"{game.Lives}", sideValue); y += 44f;
+                GUI.Label(new Rect(x, y, w, 16), "金币 GOLD", sideHeader); y += 17f;
+                GUI.Label(new Rect(x, y, w, 24), $"{game.Gold}", sideValue); y += 27f;
+                GUI.Label(new Rect(x, y, w, 16), "生命 LIVES", sideHeader); y += 17f;
+                GUI.Label(new Rect(x, y, w, 24), $"{game.Lives}", sideValue); y += 30f;
             }
 
             if (waves != null)
             {
-                GUI.Label(new Rect(x, y, w, 20), "波次 WAVE", sideHeader); y += 22f;
-                GUI.Label(new Rect(x, y, w, 32), $"{waves.CurrentWave} / {waves.TotalWaves}", sideValue); y += 36f;
-                GUI.Label(new Rect(x, y, w, 20), "剩余敌人", sideHeader); y += 22f;
-                GUI.Label(new Rect(x, y, w, 30), $"{waves.AliveCount}", sideValue); y += 42f;
+                GUI.Label(new Rect(x, y, w, 16), "波次 WAVE", sideHeader); y += 17f;
+                GUI.Label(new Rect(x, y, w, 22), $"{waves.CurrentWave} / {waves.TotalWaves}", sideValue); y += 25f;
+                GUI.Label(new Rect(x, y, w, 16), "剩余敌人", sideHeader); y += 17f;
+                GUI.Label(new Rect(x, y, w, 22), $"{waves.AliveCount}", sideValue); y += 28f;
 
                 if (flow.State == GameState.Playing)
                 {
@@ -238,10 +238,10 @@ namespace DungeonWarfare
         // Cycle the game speed (1x / 2x / 3x).
         private void DrawSpeedControl(float x, ref float y, float w)
         {
-            GUI.Label(new Rect(x, y, w, 18), "速度 SPEED", sideHeader); y += 20f;
-            if (GUI.Button(new Rect(x, y, w, 34), $"▶ x{GameSpeed:0}", buildButton))
+            GUI.Label(new Rect(x, y, w, 14), "速度 SPEED", sideHeader); y += 16f;
+            if (GUI.Button(new Rect(x, y, w, 26), $"▶ x{GameSpeed:0}", buildButton))
                 speedIndex = (speedIndex + 1) % Speeds.Length;
-            y += 40f;
+            y += 30f;
         }
 
         // Start the first wave, or count down to / early-start the next one.
@@ -253,24 +253,24 @@ namespace DungeonWarfare
             // Upcoming wave composition (single enemy type for now: count + HP).
             if (waves.HasNextWavePreview)
             {
-                GUI.Label(new Rect(x, y, w, 18), $"下一波 #{waves.NextWaveNumber}", sideHeader); y += 20f;
-                GUI.Label(new Rect(x, y, w, 20), $"{waves.EnemiesPerWave} 只 · HP {waves.NextWaveEnemyHealth:0}", hint); y += 24f;
+                GUI.Label(new Rect(x, y, w, 14), $"下一波 #{waves.NextWaveNumber}", sideHeader); y += 16f;
+                GUI.Label(new Rect(x, y, w, 16), $"{waves.EnemiesPerWave} 只 · HP {waves.NextWaveEnemyHealth:0}", hint); y += 19f;
             }
 
             if (waves.AwaitingStart)
             {
                 GUI.backgroundColor = new Color(0.35f, 0.75f, 0.4f);
-                if (GUI.Button(new Rect(x, y, w, 46), "▶ 开始", buildButton)) waves.RequestNextWave();
-                y += 52f;
+                if (GUI.Button(new Rect(x, y, w, 34), "▶ 开始", buildButton)) waves.RequestNextWave();
+                y += 38f;
             }
             else if (waves.CountingDown)
             {
-                GUI.Label(new Rect(x, y, w, 20), "下一波", sideHeader); y += 22f;
-                GUI.Label(new Rect(x, y, w, 30), $"{waves.Countdown:0.0}s", sideValue); y += 34f;
+                GUI.Label(new Rect(x, y, w, 14), "下一波", sideHeader); y += 16f;
+                GUI.Label(new Rect(x, y, w, 22), $"{waves.Countdown:0.0}s", sideValue); y += 25f;
                 GUI.backgroundColor = new Color(0.45f, 0.62f, 0.78f);
-                if (GUI.Button(new Rect(x, y, w, 44), $"提前开始\n+{waves.EarlyStartBonus} 金", buildButton))
+                if (GUI.Button(new Rect(x, y, w, 34), $"提前开始 +{waves.EarlyStartBonus} 金", buildButton))
                     waves.RequestNextWave();
-                y += 50f;
+                y += 38f;
             }
 
             GUI.backgroundColor = prev;
@@ -278,23 +278,23 @@ namespace DungeonWarfare
 
         private void DrawRemoveSection(float x, ref float y, float w)
         {
-            y += 12f;
-            GUI.Label(new Rect(x, y, w, 20), $"已选：{placer.SelectedLabel}", sideHeader); y += 24f;
+            y += 8f;
+            GUI.Label(new Rect(x, y, w, 16), $"已选：{placer.SelectedLabel}", sideHeader); y += 18f;
 
             // Stats for a selected tower (terrain has none).
             Tower sel = placer.SelectedTower;
             if (sel != null)
             {
-                GUI.Label(new Rect(x, y, w, 18), $"伤害 {sel.Damage:0}　射程 {sel.Range:0.0}", hint); y += 20f;
-                GUI.Label(new Rect(x, y, w, 18), $"攻速 每 {sel.FireInterval:0.0}s", hint); y += 22f;
+                GUI.Label(new Rect(x, y, w, 16), $"伤害 {sel.Damage:0}　射程 {sel.Range:0.0}", hint); y += 17f;
+                GUI.Label(new Rect(x, y, w, 16), $"攻速 每 {sel.FireInterval:0.0}s", hint); y += 19f;
             }
 
             Color prev = GUI.backgroundColor;
             GUI.backgroundColor = new Color(0.82f, 0.42f, 0.36f);
-            if (GUI.Button(new Rect(x, y, w, 40), $"拆除 返还 ${placer.SelectedRefund}", buildButton))
+            if (GUI.Button(new Rect(x, y, w, 32), $"拆除 返还 ${placer.SelectedRefund}", buildButton))
                 placer.RemoveSelected();
             GUI.backgroundColor = prev;
-            y += 46f;
+            y += 36f;
         }
 
         // ESC pause menu.
@@ -372,7 +372,7 @@ namespace DungeonWarfare
 
         private void DrawBuildMenu(float x, ref float y, float w)
         {
-            GUI.Label(new Rect(x, y, w, 22), "建造 BUILD", sideHeader); y += 26f;
+            GUI.Label(new Rect(x, y, w, 16), "建造 BUILD", sideHeader); y += 20f;
 
             var towers = placer.AvailableTowers;
             for (int i = 0; i < towers.Count; i++)
@@ -380,23 +380,23 @@ namespace DungeonWarfare
                 Tower t = towers[i];
                 if (t == null) continue;
                 int idx = i; // capture for the click closure
-                DrawBuildButton(new Rect(x, y, w, 54f), $"{t.DisplayName}\n${t.Cost}", t.Cost,
+                DrawBuildButton(new Rect(x, y, w, 38f), $"{t.DisplayName}  ${t.Cost}", t.Cost,
                     placer.IsSelectedTower(idx), () => placer.SelectTower(idx),
                     $"伤害 {t.Damage:0}\n攻速 每 {t.FireInterval:0.0}s\n射程 {t.Range:0.0}");
-                y += 60f;
+                y += 42f;
             }
 
             Terrain ter = placer.AvailableTerrain;
             if (ter != null)
             {
-                DrawBuildButton(new Rect(x, y, w, 54f), $"地形\n${ter.Cost}", ter.Cost,
+                DrawBuildButton(new Rect(x, y, w, 38f), $"地形  ${ter.Cost}", ter.Cost,
                     placer.IsPlacingTerrain, placer.SelectTerrain,
                     "铺在路上\n敌人绕行\n可在上面建炮塔");
-                y += 60f;
+                y += 42f;
             }
 
             if (placer.IsPlacing)
-                GUI.Label(new Rect(x, y, w, 36), "左键放置  右键取消", hint);
+                GUI.Label(new Rect(x, y, w, 24), "左键放置  右键取消", hint);
         }
 
         private void DrawBuildButton(Rect r, string label, int cost, bool selected,
@@ -462,18 +462,18 @@ namespace DungeonWarfare
             banner = new GUIStyle(GUI.skin.label)
             { fontSize = 48, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
 
-            sideHeader = new GUIStyle(GUI.skin.label) { fontSize = 18, alignment = TextAnchor.MiddleCenter };
+            sideHeader = new GUIStyle(GUI.skin.label) { fontSize = 13, alignment = TextAnchor.MiddleCenter };
             sideHeader.normal.textColor = new Color(0.7f, 0.75f, 0.85f);
 
             sideValue = new GUIStyle(GUI.skin.label)
-            { fontSize = 34, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
+            { fontSize = 22, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter };
             sideValue.normal.textColor = Color.white;
 
             buildButton = new GUIStyle(GUI.skin.button)
-            { fontSize = 18, fontStyle = FontStyle.Bold };
+            { fontSize = 13, fontStyle = FontStyle.Bold };
 
             hint = new GUIStyle(GUI.skin.label)
-            { fontSize = 15, alignment = TextAnchor.MiddleCenter };
+            { fontSize = 12, alignment = TextAnchor.MiddleCenter };
             hint.normal.textColor = new Color(1f, 0.9f, 0.5f);
 
             tooltip = new GUIStyle(GUI.skin.box)
