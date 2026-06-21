@@ -12,7 +12,7 @@ namespace DungeonWarfare
     /// </summary>
     public class PoisonWave : MonoBehaviour
     {
-        private const float ExpandTime = 0.5f; // time for the front to finish its sweep
+        public const float ExpandTime = 0.5f; // time for the front to finish its sweep
         private const int Segments = 20;
         private static readonly Color WaveColor = new(0.5f, 0.95f, 0.35f, 0.45f);
 

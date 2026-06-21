@@ -38,6 +38,14 @@ namespace DungeonWarfare
         /// <summary>Path-following speed scaled by any active slow (knockback is unaffected).</summary>
         private float Speed => speed * (status != null ? status.SpeedMultiplier : 1f);
 
+        /// <summary>
+        /// Velocity at the enemy's BASE (unslowed) speed × current heading. Used for lead
+        /// prediction: an enemy can never exceed its base speed, so leading at it stays valid
+        /// even if a temporary slow wears off before the shot arrives (slowed speed would
+        /// under-lead and miss once the enemy recovers).
+        /// </summary>
+        public Vector3 BaseVelocity => heading * speed;
+
         private Vector3 debugProj;   // where we're projected onto the route
         private Vector3 debugCarrot; // the carrot we're steering toward
 

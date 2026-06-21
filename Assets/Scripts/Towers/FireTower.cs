@@ -32,12 +32,9 @@ namespace DungeonWarfare
 
         protected override void Update()
         {
-            Health lead = FindTarget();
-            if (lead == null) { if (coneRenderer != null) coneRenderer.enabled = false; return; }
-
-            Vector3 aim = lead.transform.position - transform.position;
-            aim.z = 0f;
-            aim = aim.sqrMagnitude < 1e-6f ? Vector3.right : aim.normalized;
+            // Aim the flame where it covers the most enemies, not at the frontmost one.
+            Vector3 aim = BestConeAim(DebugTuning.FireConeAngle);
+            if (aim == Vector3.zero) { if (coneRenderer != null) coneRenderer.enabled = false; return; }
             float half = DebugTuning.FireConeAngle * 0.5f;
 
             foreach (Collider2D col in Physics2D.OverlapCircleAll(transform.position, Range))

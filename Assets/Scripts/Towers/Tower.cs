@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DungeonWarfare
@@ -75,6 +76,51 @@ namespace DungeonWarfare
                 }
             }
             return best;
+        }
+
+        /// <summary>
+        /// For cone weapons: the aim direction whose fan (width <paramref name="coneAngleDeg"/>)
+        /// covers the MOST in-range enemies — so the cone catches as many as possible rather
+        /// than centering on the frontmost one. Returns <see cref="Vector3.zero"/> if no enemy
+        /// is in range. O(n²) over in-range enemies (n is small).
+        /// </summary>
+        protected Vector3 BestConeAim(float coneAngleDeg)
+        {
+            var angles = new List<float>();
+            foreach (Collider2D col in Physics2D.OverlapCircleAll(transform.position, range))
+            {
+                if (!col.TryGetComponent(out Enemy _)) continue;
+                if (!col.TryGetComponent(out Health h) || h.IsDead) continue;
+                Vector3 to = col.transform.position - transform.position;
+                if (to.sqrMagnitude < 1e-6f) continue;
+                angles.Add(Mathf.Atan2(to.y, to.x) * Mathf.Rad2Deg);
+            }
+            return BestAimOverAngles(angles, coneAngleDeg);
+        }
+
+        /// <summary>
+        /// Of the given enemy bearings (degrees), the aim direction whose fan of width
+        /// <paramref name="coneAngleDeg"/> covers the most. <see cref="Vector3.zero"/> if empty.
+        /// Subclasses can predict future bearings and pass them here for lead-aiming.
+        /// </summary>
+        protected static Vector3 BestAimOverAngles(List<float> angles, float coneAngleDeg)
+        {
+            if (angles.Count == 0) return Vector3.zero;
+
+            // Slide a window of width coneAngleDeg starting at each bearing; the one
+            // covering the most (with 360° wraparound) wins.
+            int best = 0;
+            float bestStart = angles[0];
+            foreach (float start in angles)
+            {
+                int count = 0;
+                foreach (float a in angles)
+                    if (Mathf.Repeat(a - start, 360f) <= coneAngleDeg) count++;
+                if (count > best) { best = count; bestStart = start; }
+            }
+
+            float aimDeg = (bestStart + coneAngleDeg * 0.5f) * Mathf.Deg2Rad;
+            return new Vector3(Mathf.Cos(aimDeg), Mathf.Sin(aimDeg), 0f);
         }
 
         protected virtual void Fire(Health target)
