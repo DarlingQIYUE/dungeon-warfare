@@ -203,25 +203,15 @@ namespace DungeonWarfare
             float y = sb.y + 6f;
 
             if (game != null)
-            {
-                GUI.Label(new Rect(x, y, w, 16), "金币 GOLD", sideHeader); y += 17f;
-                GUI.Label(new Rect(x, y, w, 24), $"{game.Gold}", sideValue); y += 27f;
-                GUI.Label(new Rect(x, y, w, 16), "生命 LIVES", sideHeader); y += 17f;
-                GUI.Label(new Rect(x, y, w, 24), $"{game.Lives}", sideValue); y += 30f;
-            }
+                DrawStatPair(x, ref y, w, "金币", $"{game.Gold}", "生命", $"{game.Lives}");
 
             if (waves != null)
             {
-                GUI.Label(new Rect(x, y, w, 16), "波次 WAVE", sideHeader); y += 17f;
-                GUI.Label(new Rect(x, y, w, 22), $"{waves.CurrentWave} / {waves.TotalWaves}", sideValue); y += 25f;
-                GUI.Label(new Rect(x, y, w, 16), "剩余敌人", sideHeader); y += 17f;
-                GUI.Label(new Rect(x, y, w, 22), $"{waves.AliveCount}", sideValue); y += 28f;
+                DrawStatPair(x, ref y, w, "波次", $"{waves.CurrentWave}/{waves.TotalWaves}",
+                             "剩余敌人", $"{waves.AliveCount}");
 
                 if (flow.State == GameState.Playing)
-                {
-                    DrawWaveControl(x, ref y, w);
-                    DrawSpeedControl(x, ref y, w);
-                }
+                    DrawWaveAndSpeed(x, ref y, w);
             }
 
             // Build menu (only while actively playing)
@@ -235,45 +225,56 @@ namespace DungeonWarfare
                 DrawRemoveSection(x, ref y, w);
         }
 
-        // Cycle the game speed (1x / 2x / 3x).
-        private void DrawSpeedControl(float x, ref float y, float w)
+        // Two labeled stats side by side (header on top, value below).
+        private void DrawStatPair(float x, ref float y, float w,
+                                  string h1, string v1, string h2, string v2)
         {
-            GUI.Label(new Rect(x, y, w, 14), "速度 SPEED", sideHeader); y += 16f;
-            if (GUI.Button(new Rect(x, y, w, 26), $"▶ x{GameSpeed:0}", buildButton))
-                speedIndex = (speedIndex + 1) % Speeds.Length;
-            y += 30f;
+            float half = (w - 6f) / 2f;
+            float x2 = x + half + 6f;
+            GUI.Label(new Rect(x, y, half, 16), h1, sideHeader);
+            GUI.Label(new Rect(x2, y, half, 16), h2, sideHeader);
+            y += 17f;
+            GUI.Label(new Rect(x, y, half, 24), v1, sideValue);
+            GUI.Label(new Rect(x2, y, half, 24), v2, sideValue);
+            y += 28f;
         }
 
-        // Start the first wave, or count down to / early-start the next one.
-        private void DrawWaveControl(float x, ref float y, float w)
+        // Next-wave info on one line, then start/early-start (left) + speed (right) on one row.
+        private void DrawWaveAndSpeed(float x, ref float y, float w)
         {
             if (waves == null) return;
-            Color prev = GUI.backgroundColor;
 
-            // Upcoming wave composition (single enemy type for now: count + HP).
-            if (waves.HasNextWavePreview)
+            if (waves.CountingDown)
             {
-                GUI.Label(new Rect(x, y, w, 14), $"下一波 #{waves.NextWaveNumber}", sideHeader); y += 16f;
-                GUI.Label(new Rect(x, y, w, 16), $"{waves.EnemiesPerWave} 只 · HP {waves.NextWaveEnemyHealth:0}", hint); y += 19f;
+                GUI.Label(new Rect(x, y, w, 16), $"下一波 {waves.Countdown:0.0}s", hint); y += 18f;
             }
+            else if (waves.HasNextWavePreview)
+            {
+                GUI.Label(new Rect(x, y, w, 16),
+                    $"下一波 #{waves.NextWaveNumber}  {waves.EnemiesPerWave}只 HP{waves.NextWaveEnemyHealth:0}", hint);
+                y += 18f;
+            }
+
+            float half = (w - 6f) / 2f;
+            float x2 = x + half + 6f;
+            Color prev = GUI.backgroundColor;
 
             if (waves.AwaitingStart)
             {
                 GUI.backgroundColor = new Color(0.35f, 0.75f, 0.4f);
-                if (GUI.Button(new Rect(x, y, w, 34), "▶ 开始", buildButton)) waves.RequestNextWave();
-                y += 38f;
+                if (GUI.Button(new Rect(x, y, half, 32), "▶ 开始", buildButton)) waves.RequestNextWave();
             }
             else if (waves.CountingDown)
             {
-                GUI.Label(new Rect(x, y, w, 14), "下一波", sideHeader); y += 16f;
-                GUI.Label(new Rect(x, y, w, 22), $"{waves.Countdown:0.0}s", sideValue); y += 25f;
                 GUI.backgroundColor = new Color(0.45f, 0.62f, 0.78f);
-                if (GUI.Button(new Rect(x, y, w, 34), $"提前开始 +{waves.EarlyStartBonus} 金", buildButton))
+                if (GUI.Button(new Rect(x, y, half, 32), $"提前 +{waves.EarlyStartBonus}", buildButton))
                     waves.RequestNextWave();
-                y += 38f;
             }
-
             GUI.backgroundColor = prev;
+
+            if (GUI.Button(new Rect(x2, y, half, 32), $"▶ x{GameSpeed:0}", buildButton))
+                speedIndex = (speedIndex + 1) % Speeds.Length;
+            y += 36f;
         }
 
         private void DrawRemoveSection(float x, ref float y, float w)
@@ -372,31 +373,43 @@ namespace DungeonWarfare
 
         private void DrawBuildMenu(float x, ref float y, float w)
         {
-            GUI.Label(new Rect(x, y, w, 16), "建造 BUILD", sideHeader); y += 20f;
+            GUI.Label(new Rect(x, y, w, 16), "建造 BUILD", sideHeader); y += 18f;
 
+            const float bh = 40f;            // button height
+            float half = (w - 6f) / 2f;      // two columns
             var towers = placer.AvailableTowers;
-            for (int i = 0; i < towers.Count; i++)
-            {
-                Tower t = towers[i];
-                if (t == null) continue;
-                int idx = i; // capture for the click closure
-                DrawBuildButton(new Rect(x, y, w, 38f), $"{t.DisplayName}  ${t.Cost}", t.Cost,
-                    placer.IsSelectedTower(idx), () => placer.SelectTower(idx),
-                    $"伤害 {t.Damage:0}\n攻速 每 {t.FireInterval:0.0}s\n射程 {t.Range:0.0}");
-                y += 42f;
-            }
-
             Terrain ter = placer.AvailableTerrain;
-            if (ter != null)
+            int count = towers.Count + (ter != null ? 1 : 0);
+
+            for (int i = 0; i < count; i++)
             {
-                DrawBuildButton(new Rect(x, y, w, 38f), $"地形  ${ter.Cost}", ter.Cost,
-                    placer.IsPlacingTerrain, placer.SelectTerrain,
-                    "铺在路上\n敌人绕行\n可在上面建炮塔");
-                y += 42f;
+                int col = i % 2;
+                var cell = new Rect(x + col * (half + 6f), y, half, bh);
+
+                if (i < towers.Count)
+                {
+                    Tower t = towers[i];
+                    if (t != null)
+                    {
+                        int idx = i; // capture for the click closure
+                        DrawBuildButton(cell, $"{t.DisplayName}\n${t.Cost}", t.Cost,
+                            placer.IsSelectedTower(idx), () => placer.SelectTower(idx),
+                            $"伤害 {t.Damage:0}\n攻速 每 {t.FireInterval:0.0}s\n射程 {t.Range:0.0}");
+                    }
+                }
+                else
+                {
+                    DrawBuildButton(cell, $"地形\n${ter.Cost}", ter.Cost,
+                        placer.IsPlacingTerrain, placer.SelectTerrain,
+                        "铺在路上\n敌人绕行\n可在上面建炮塔");
+                }
+
+                if (col == 1) y += bh + 4f; // advance after filling the right column
             }
+            if (count % 2 == 1) y += bh + 4f; // last row had only the left column
 
             if (placer.IsPlacing)
-                GUI.Label(new Rect(x, y, w, 24), "左键放置  右键取消", hint);
+                GUI.Label(new Rect(x, y, w, 22), "左键放置  右键取消", hint);
         }
 
         private void DrawBuildButton(Rect r, string label, int cost, bool selected,
