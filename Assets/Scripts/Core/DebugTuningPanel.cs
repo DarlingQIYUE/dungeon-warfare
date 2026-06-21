@@ -19,6 +19,7 @@ namespace DungeonWarfare
         private const string CannonName = "加农炮";
         private const string InjectionName = "病毒注射";
         private const string SniperName = "狙击炮";
+        private const string LightningName = "闪电链";
 
         private class TowerStat { public string name; public float damage, range, fire; }
 
@@ -113,11 +114,20 @@ namespace DungeonWarfare
                 DebugTuning.VulnerabilityAmp      = Row("伤害加深", DebugTuning.VulnerabilityAmp, 0f, 2f);
                 DebugTuning.VulnerabilityDuration = Row("标记时长", DebugTuning.VulnerabilityDuration, 0.5f, 10f);
             }
+            else if (towerName == LightningName)
+            {
+                DebugTuning.ChainJumps     = Mathf.RoundToInt(Row("跳数", DebugTuning.ChainJumps, 0f, 8f));
+                DebugTuning.ChainFalloff   = Row("每跳衰减", DebugTuning.ChainFalloff, 0.1f, 1f);
+                DebugTuning.ChainJumpRange = Row("跳跃距离", DebugTuning.ChainJumpRange, 1f, 5f);
+            }
         }
 
         /// <summary>How many extra rows a type adds, for sizing the panel.</summary>
         private static int SpecialKnobCount(string towerName) =>
-            towerName == CannonName ? 5 : towerName == InjectionName ? 3 : towerName == SniperName ? 2 : 0;
+            towerName == CannonName ? 5 :
+            towerName == InjectionName ? 3 :
+            towerName == SniperName ? 2 :
+            towerName == LightningName ? 3 : 0;
 
         private float PanelHeight()
         {

@@ -21,5 +21,10 @@ namespace DungeonWarfare
         // --- A31Aim: sniper vulnerability mark --- (hit damage lives on the tower)
         public static float VulnerabilityAmp = 0.4f;      // +40% damage taken while marked
         public static float VulnerabilityDuration = 4f;   // mark duration (s), refreshed on hit
+
+        // --- A32Lighting: chain lightning --- (first-hit damage lives on the tower)
+        public static int ChainJumps = 3;          // extra hops after the first target
+        public static float ChainFalloff = 0.7f;   // damage multiplier per hop
+        public static float ChainJumpRange = 2.5f; // max distance between consecutive targets
     }
 }

@@ -17,7 +17,7 @@ namespace DungeonWarfare
         protected Vector3 lastKnownPos;
         private float life;
 
-        public void Launch(Health targetHealth, float damageAmount)
+        public virtual void Launch(Health targetHealth, float damageAmount)
         {
             target = targetHealth;
             damage = damageAmount;

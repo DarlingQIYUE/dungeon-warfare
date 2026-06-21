@@ -32,6 +32,8 @@ namespace DungeonWarfare.EditorTools
         private const string InjectionProjectilePrefabPath = PrefabDir + "/InjectionProjectile.prefab";
         private const string AimTowerPrefabPath = PrefabDir + "/AimTower.prefab";
         private const string AimProjectilePrefabPath = PrefabDir + "/AimProjectile.prefab";
+        private const string LightningTowerPrefabPath = PrefabDir + "/LightningTower.prefab";
+        private const string LightningProjectilePrefabPath = PrefabDir + "/LightningProjectile.prefab";
         private const string TerrainPrefabPath = PrefabDir + "/Terrain.prefab";
         private const string ScenePath = SceneDir + "/DungeonWarfare.unity";
 
@@ -59,11 +61,14 @@ namespace DungeonWarfare.EditorTools
             Tower injectionTowerPrefab = EnsureInjectionTowerPrefab(square, injectionProjectilePrefab);
             AimProjectile aimProjectilePrefab = EnsureAimProjectilePrefab(circle);
             Tower aimTowerPrefab = EnsureAimTowerPrefab(square, aimProjectilePrefab);
+            LightningProjectile lightningProjectilePrefab = EnsureLightningProjectilePrefab();
+            Tower lightningTowerPrefab = EnsureLightningTowerPrefab(square, lightningProjectilePrefab);
             Terrain terrainPrefab = EnsureTerrainPrefab(square);
             Enemy enemyPrefab = EnsureEnemyPrefab(circle, square);
 
             BuildScene(square, circle, enemyPrefab,
-                       new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab, aimTowerPrefab }, terrainPrefab);
+                       new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab, aimTowerPrefab, lightningTowerPrefab },
+                       terrainPrefab);
 
             AssetDatabase.SaveAssets();
             Debug.Log("[DungeonWarfare] Demo scene built. Press Play -> 开始游戏 -> 第 1 关, then left-click cells to build towers.");
@@ -362,6 +367,50 @@ namespace DungeonWarfare.EditorTools
             SetFloat(tower, "damage", 35f);        // heavy single hit
 
             Tower asset = PrefabUtility.SaveAsPrefabAsset(go, AimTowerPrefabPath).GetComponent<Tower>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static LightningProjectile EnsureLightningProjectilePrefab()
+        {
+            EnsureFolder(PrefabDir);
+
+            // Hitscan: no flying body/sprite — the strike resolves instantly and the
+            // only visual is the LightningFx arc. Just a holder for the component.
+            var go = new GameObject("LightningProjectile");
+            go.AddComponent<LightningProjectile>(); // chain hops via DebugTuning
+
+            LightningProjectile asset = PrefabUtility.SaveAsPrefabAsset(go, LightningProjectilePrefabPath)
+                .GetComponent<LightningProjectile>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Tower EnsureLightningTowerPrefab(Sprite square, Projectile projectilePrefab)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("LightningTower");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.35f, 0.7f, 1f); // electric blue = chain lightning
+            sr.sortingOrder = 3;
+
+            var hitbox = go.AddComponent<BoxCollider2D>();
+            hitbox.size = new Vector2(1.1f, 1.1f);
+            hitbox.isTrigger = true;
+
+            Tower tower = go.AddComponent<Tower>();
+            SetRef(tower, "projectilePrefab", projectilePrefab);
+            SetString(tower, "displayName", "闪电链");
+            SetInt(tower, "cost", 50);
+            SetFloat(tower, "range", 4.5f);
+            SetFloat(tower, "fireInterval", 0.5f); // fast (A22 连发加速 branch)
+            SetFloat(tower, "damage", 8f);         // low per-shot; value comes from chaining
+
+            Tower asset = PrefabUtility.SaveAsPrefabAsset(go, LightningTowerPrefabPath).GetComponent<Tower>();
             Object.DestroyImmediate(go);
             return asset;
         }
