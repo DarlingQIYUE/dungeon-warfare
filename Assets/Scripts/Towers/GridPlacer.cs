@@ -155,6 +155,7 @@ namespace DungeonWarfare
                 Tower laser = Resources.Load<Tower>("LaserTower");
                 Tower veteran = Resources.Load<Tower>("VeteranTower");
                 Tower poison = Resources.Load<Tower>("PoisonTower");
+                Tower fire = Resources.Load<Tower>("FireTower");
                 if (basic != null) list.Add(basic);
                 if (bomb != null) list.Add(bomb);
                 if (injection != null) list.Add(injection);
@@ -163,6 +164,7 @@ namespace DungeonWarfare
                 if (laser != null) list.Add(laser);
                 if (veteran != null) list.Add(veteran);
                 if (poison != null) list.Add(poison);
+                if (fire != null) list.Add(fire);
             }
             return list.ToArray();
         }

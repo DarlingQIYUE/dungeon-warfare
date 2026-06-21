@@ -40,5 +40,8 @@ namespace DungeonWarfare
         public static float PoisonWaveWidth = 1f;      // radial thickness of the ring band (world units)
         public static float PoisonSlowFactor = 0.5f;   // movement reduction the wave applies (0..1)
         public static float PoisonSlowDuration = 1f;   // slow lingers this long after being swept
+
+        // --- A33Fire: flamethrower cone --- (cone dps = tower damage)
+        public static float FireConeAngle = 60f;       // small fan width (degrees)
     }
 }
