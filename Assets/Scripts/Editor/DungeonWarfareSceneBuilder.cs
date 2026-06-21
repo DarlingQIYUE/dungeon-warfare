@@ -30,6 +30,8 @@ namespace DungeonWarfare.EditorTools
         private const string BombProjectilePrefabPath = PrefabDir + "/BombProjectile.prefab";
         private const string InjectionTowerPrefabPath = PrefabDir + "/InjectionTower.prefab";
         private const string InjectionProjectilePrefabPath = PrefabDir + "/InjectionProjectile.prefab";
+        private const string AimTowerPrefabPath = PrefabDir + "/AimTower.prefab";
+        private const string AimProjectilePrefabPath = PrefabDir + "/AimProjectile.prefab";
         private const string TerrainPrefabPath = PrefabDir + "/Terrain.prefab";
         private const string ScenePath = SceneDir + "/DungeonWarfare.unity";
 
@@ -55,11 +57,13 @@ namespace DungeonWarfare.EditorTools
             Tower bombTowerPrefab = EnsureBombTowerPrefab(square, bombProjectilePrefab);
             InjectionProjectile injectionProjectilePrefab = EnsureInjectionProjectilePrefab(circle);
             Tower injectionTowerPrefab = EnsureInjectionTowerPrefab(square, injectionProjectilePrefab);
+            AimProjectile aimProjectilePrefab = EnsureAimProjectilePrefab(circle);
+            Tower aimTowerPrefab = EnsureAimTowerPrefab(square, aimProjectilePrefab);
             Terrain terrainPrefab = EnsureTerrainPrefab(square);
             Enemy enemyPrefab = EnsureEnemyPrefab(circle, square);
 
             BuildScene(square, circle, enemyPrefab,
-                       new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab }, terrainPrefab);
+                       new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab, aimTowerPrefab }, terrainPrefab);
 
             AssetDatabase.SaveAssets();
             Debug.Log("[DungeonWarfare] Demo scene built. Press Play -> 开始游戏 -> 第 1 关, then left-click cells to build towers.");
@@ -309,6 +313,55 @@ namespace DungeonWarfare.EditorTools
             SetFloat(tower, "damage", 2f);         // small direct hit; most damage comes from poison
 
             Tower asset = PrefabUtility.SaveAsPrefabAsset(go, InjectionTowerPrefabPath).GetComponent<Tower>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static AimProjectile EnsureAimProjectilePrefab(Sprite circle)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("AimProjectile");
+            go.transform.localScale = new Vector3(0.14f, 0.14f, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = circle;
+            sr.color = new Color(0.85f, 0.45f, 1f); // purple sniper round (vulnerability theme)
+            sr.sortingOrder = 4;
+
+            go.AddComponent<AimProjectile>(); // heavy hit + vulnerability mark via DebugTuning
+
+            AimProjectile asset = PrefabUtility.SaveAsPrefabAsset(go, AimProjectilePrefabPath)
+                .GetComponent<AimProjectile>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Tower EnsureAimTowerPrefab(Sprite square, Projectile projectilePrefab)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("AimTower");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.55f, 0.4f, 0.8f); // purple = sniper / vulnerability
+            sr.sortingOrder = 3;
+
+            var hitbox = go.AddComponent<BoxCollider2D>();
+            hitbox.size = new Vector2(1.1f, 1.1f);
+            hitbox.isTrigger = true;
+
+            Tower tower = go.AddComponent<Tower>();
+            SetRef(tower, "projectilePrefab", projectilePrefab);
+            SetString(tower, "displayName", "狙击炮");
+            SetInt(tower, "cost", 60);
+            SetFloat(tower, "range", 8f);          // long reach: tag enemies far out
+            SetFloat(tower, "fireInterval", 2.0f); // slow
+            SetFloat(tower, "damage", 35f);        // heavy single hit
+
+            Tower asset = PrefabUtility.SaveAsPrefabAsset(go, AimTowerPrefabPath).GetComponent<Tower>();
             Object.DestroyImmediate(go);
             return asset;
         }

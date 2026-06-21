@@ -17,5 +17,9 @@ namespace DungeonWarfare
         public static float PoisonPerStackDps = 10f;    // damage-per-second contributed by each stack
         public static int PoisonMaxStacks = 10;         // stack cap (full stacks => max dps)
         public static float PoisonDropInterval = 1.2f;  // seconds between losing a stack once unhit
+
+        // --- A31Aim: sniper vulnerability mark --- (hit damage lives on the tower)
+        public static float VulnerabilityAmp = 0.4f;      // +40% damage taken while marked
+        public static float VulnerabilityDuration = 4f;   // mark duration (s), refreshed on hit
     }
 }

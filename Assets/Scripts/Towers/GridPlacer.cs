@@ -150,9 +150,11 @@ namespace DungeonWarfare
                 Tower basic = Resources.Load<Tower>("Tower");
                 Tower bomb = Resources.Load<Tower>("BombTower");
                 Tower injection = Resources.Load<Tower>("InjectionTower");
+                Tower aim = Resources.Load<Tower>("AimTower");
                 if (basic != null) list.Add(basic);
                 if (bomb != null) list.Add(bomb);
                 if (injection != null) list.Add(injection);
+                if (aim != null) list.Add(aim);
             }
             return list.ToArray();
         }

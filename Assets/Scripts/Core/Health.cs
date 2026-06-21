@@ -20,6 +20,13 @@ namespace DungeonWarfare
         public bool IsDead => Current <= 0f;
         public float Normalized => maxHealth > 0f ? Current / maxHealth : 0f;
 
+        /// <summary>
+        /// Multiplier applied to all incoming damage (1 = normal). Driven by debuffs
+        /// such as the sniper's vulnerability mark, so every damage source (towers,
+        /// poison, wall-slam) is amplified through one central hook.
+        /// </summary>
+        public float DamageTakenMultiplier { get; set; } = 1f;
+
         /// <summary>Fired once when health first reaches zero.</summary>
         public event Action<Health> Died;
         /// <summary>Fired every time damage is applied (amount > 0).</summary>
@@ -38,6 +45,8 @@ namespace DungeonWarfare
         public void TakeDamage(float amount)
         {
             if (IsDead || amount <= 0f) return;
+
+            amount *= DamageTakenMultiplier; // amplified by vulnerability / armor-break debuffs
 
             Current = Mathf.Max(0f, Current - amount);
             DamageTaken?.Invoke(this, amount);
