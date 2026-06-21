@@ -37,6 +37,7 @@ namespace DungeonWarfare.EditorTools
         private const string LaserTowerPrefabPath = PrefabDir + "/LaserTower.prefab";
         private const string VeteranTowerPrefabPath = PrefabDir + "/VeteranTower.prefab";
         private const string VeteranProjectilePrefabPath = PrefabDir + "/VeteranProjectile.prefab";
+        private const string PoisonTowerPrefabPath = PrefabDir + "/PoisonTower.prefab";
         private const string TerrainPrefabPath = PrefabDir + "/Terrain.prefab";
         private const string ScenePath = SceneDir + "/DungeonWarfare.unity";
 
@@ -69,12 +70,13 @@ namespace DungeonWarfare.EditorTools
             Tower laserTowerPrefab = EnsureLaserTowerPrefab(square);
             VeteranProjectile veteranProjectilePrefab = EnsureVeteranProjectilePrefab(circle);
             Tower veteranTowerPrefab = EnsureVeteranTowerPrefab(square, veteranProjectilePrefab);
+            Tower poisonTowerPrefab = EnsurePoisonTowerPrefab(square);
             Terrain terrainPrefab = EnsureTerrainPrefab(square);
             Enemy enemyPrefab = EnsureEnemyPrefab(circle, square);
 
             BuildScene(square, circle, enemyPrefab,
                        new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab, aimTowerPrefab,
-                               lightningTowerPrefab, laserTowerPrefab, veteranTowerPrefab },
+                               lightningTowerPrefab, laserTowerPrefab, veteranTowerPrefab, poisonTowerPrefab },
                        terrainPrefab);
 
             AssetDatabase.SaveAssets();
@@ -496,6 +498,36 @@ namespace DungeonWarfare.EditorTools
             SetFloat(tower, "damage", 5f);         // low base; grows per kill
 
             Tower asset = PrefabUtility.SaveAsPrefabAsset(go, VeteranTowerPrefabPath).GetComponent<Tower>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Tower EnsurePoisonTowerPrefab(Sprite square)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("PoisonTower");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.45f, 0.7f, 0.3f); // toxic green
+            sr.sortingOrder = 3;
+
+            var hitbox = go.AddComponent<BoxCollider2D>();
+            hitbox.size = new Vector2(1.1f, 1.1f);
+            hitbox.isTrigger = true;
+
+            // No projectile: fires an expanding fan-ring wave (PoisonWave) on each shot.
+            // Per-wave damage lives in the tower's damage field.
+            Tower tower = go.AddComponent<PoisonTower>();
+            SetString(tower, "displayName", "毒素炮");
+            SetInt(tower, "cost", 45);
+            SetFloat(tower, "range", 2.5f);        // small
+            SetFloat(tower, "fireInterval", 0.6f); // wave emission rate
+            SetFloat(tower, "damage", 8f);         // damage per wave hit
+
+            Tower asset = PrefabUtility.SaveAsPrefabAsset(go, PoisonTowerPrefabPath).GetComponent<Tower>();
             Object.DestroyImmediate(go);
             return asset;
         }

@@ -34,5 +34,11 @@ namespace DungeonWarfare
         // --- A32Veteran: kill-stacking growth --- (base stats live on the tower; both uncapped)
         public static float VeteranDamagePerKill = 1.5f;      // +damage per last-hit kill (uncapped)
         public static float VeteranFireReducePerKill = 0.01f; // fireInterval cut per kill, s (uncapped)
+
+        // --- A33Poison: toxic fan-ring wave --- (per-wave damage = tower damage)
+        public static float PoisonConeAngle = 120f;    // fan arc (degrees)
+        public static float PoisonWaveWidth = 1f;      // radial thickness of the ring band (world units)
+        public static float PoisonSlowFactor = 0.5f;   // movement reduction the wave applies (0..1)
+        public static float PoisonSlowDuration = 1f;   // slow lingers this long after being swept
     }
 }

@@ -22,6 +22,7 @@ namespace DungeonWarfare
         private const string LightningName = "闪电链";
         private const string LaserName = "激光";
         private const string VeteranName = "老兵";
+        private const string PoisonName = "毒素炮";
 
         private class TowerStat { public string name; public float damage, range, fire; }
 
@@ -132,6 +133,13 @@ namespace DungeonWarfare
                 DebugTuning.VeteranDamagePerKill    = Row("每杀+伤害", DebugTuning.VeteranDamagePerKill, 0f, 5f);
                 DebugTuning.VeteranFireReducePerKill = Row("每杀加速", DebugTuning.VeteranFireReducePerKill, 0f, 0.05f);
             }
+            else if (towerName == PoisonName)
+            {
+                DebugTuning.PoisonConeAngle    = Row("扇形角度", DebugTuning.PoisonConeAngle, 30f, 180f);
+                DebugTuning.PoisonWaveWidth    = Row("环宽", DebugTuning.PoisonWaveWidth, 0.2f, 4f);
+                DebugTuning.PoisonSlowFactor   = Row("减速比例", DebugTuning.PoisonSlowFactor, 0f, 0.8f);
+                DebugTuning.PoisonSlowDuration = Row("减速余留", DebugTuning.PoisonSlowDuration, 0.2f, 4f);
+            }
         }
 
         /// <summary>How many extra rows a type adds, for sizing the panel.</summary>
@@ -141,7 +149,8 @@ namespace DungeonWarfare
             towerName == SniperName ? 2 :
             towerName == LightningName ? 3 :
             towerName == LaserName ? 2 :
-            towerName == VeteranName ? 2 : 0;
+            towerName == VeteranName ? 2 :
+            towerName == PoisonName ? 4 : 0;
 
         private float PanelHeight()
         {

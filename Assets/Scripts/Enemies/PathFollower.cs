@@ -31,8 +31,12 @@ namespace DungeonWarfare
         public event System.Action<float> WallSlammed;
 
         private GridSystem grid;
+        private EnemyStatus status;                   // optional; supplies the slow multiplier
         private readonly List<Vector3> path = new(); // route as world-space cell centers
         private int seg;                             // segment we're on: path[seg] -> path[seg+1]
+
+        /// <summary>Path-following speed scaled by any active slow (knockback is unaffected).</summary>
+        private float Speed => speed * (status != null ? status.SpeedMultiplier : 1f);
 
         private Vector3 debugProj;   // where we're projected onto the route
         private Vector3 debugCarrot; // the carrot we're steering toward
@@ -75,6 +79,7 @@ namespace DungeonWarfare
         public void Initialize(GridSystem gridSystem)
         {
             grid = gridSystem;
+            status = GetComponent<EnemyStatus>();
             ReachedEnd = false;
 
             SetPath(grid.FindAnyAnglePath(grid.EntryCell));
@@ -126,7 +131,7 @@ namespace DungeonWarfare
 
             if (path.Count == 1)
             {
-                transform.position = Vector3.MoveTowards(pos, path[0], speed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(pos, path[0], Speed * Time.deltaTime);
                 ApplyKnockback();
                 if (Vector3.Distance(transform.position, path[0]) < 0.04f) ReachedEnd = true;
                 return;
@@ -140,7 +145,7 @@ namespace DungeonWarfare
             Vector3 carrot = PointAhead(pos, lookahead);
             Vector3 toCarrot = carrot - pos;
             if (toCarrot.sqrMagnitude > 1e-6f) heading = toCarrot.normalized;
-            transform.position = Vector3.MoveTowards(pos, carrot, speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(pos, carrot, Speed * Time.deltaTime);
 
             // 3) Add any active knockback on top of the path movement (they sum).
             ApplyKnockback();
