@@ -30,5 +30,9 @@ namespace DungeonWarfare
         // --- A32Lazer: ramping laser beam --- (base dps = tower damage)
         public static float LaserRampTime = 3f;       // seconds of continuous fire to reach max
         public static float LaserRampMultiplier = 4f; // dps multiplier at full ramp
+
+        // --- A32Veteran: kill-stacking growth --- (base stats live on the tower; both uncapped)
+        public static float VeteranDamagePerKill = 1.5f;      // +damage per last-hit kill (uncapped)
+        public static float VeteranFireReducePerKill = 0.01f; // fireInterval cut per kill, s (uncapped)
     }
 }

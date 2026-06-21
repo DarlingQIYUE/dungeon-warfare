@@ -20,14 +20,20 @@ namespace DungeonWarfare
         public string DisplayName => displayName;
         public int Cost => cost;
         public float Range => range;
-        public float Damage => damage;
-        public float FireInterval => fireInterval;
+        // Virtual so growth towers (e.g. the veteran) can layer a kill bonus on top
+        // of the tunable base value.
+        public virtual float Damage => damage;
+        public virtual float FireInterval => fireInterval;
 
         // Live tuning (DebugTuningPanel): adjust combat stats at runtime, then bake
         // the dialed-in values back into the prefab via the scene builder.
         public void SetRange(float value) => range = value;
         public void SetDamage(float value) => damage = value;
         public void SetFireInterval(float value) => fireInterval = value;
+
+        // Spawn point + projectile, exposed so subclasses can fire custom shots.
+        protected Transform Muzzle => muzzle != null ? muzzle : transform;
+        protected Projectile ProjectilePrefab => projectilePrefab;
 
         private float cooldown;
 
@@ -45,7 +51,7 @@ namespace DungeonWarfare
             Health target = FindTarget();
             if (target == null) return;
 
-            cooldown = fireInterval;
+            cooldown = FireInterval;
             Fire(target);
         }
 
@@ -71,18 +77,18 @@ namespace DungeonWarfare
             return best;
         }
 
-        private void Fire(Health target)
+        protected virtual void Fire(Health target)
         {
-            Vector3 spawn = muzzle != null ? muzzle.position : transform.position;
+            Vector3 spawn = Muzzle.position;
 
-            if (projectilePrefab != null)
+            if (ProjectilePrefab != null)
             {
-                Projectile shot = Instantiate(projectilePrefab, spawn, Quaternion.identity);
-                shot.Launch(target, damage);
+                Projectile shot = Instantiate(ProjectilePrefab, spawn, Quaternion.identity);
+                shot.Launch(target, Damage);
             }
             else
             {
-                target.TakeDamage(damage); // hitscan fallback if no projectile prefab
+                target.TakeDamage(Damage); // hitscan fallback if no projectile prefab
             }
         }
 

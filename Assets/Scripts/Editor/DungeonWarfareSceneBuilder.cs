@@ -35,6 +35,8 @@ namespace DungeonWarfare.EditorTools
         private const string LightningTowerPrefabPath = PrefabDir + "/LightningTower.prefab";
         private const string LightningProjectilePrefabPath = PrefabDir + "/LightningProjectile.prefab";
         private const string LaserTowerPrefabPath = PrefabDir + "/LaserTower.prefab";
+        private const string VeteranTowerPrefabPath = PrefabDir + "/VeteranTower.prefab";
+        private const string VeteranProjectilePrefabPath = PrefabDir + "/VeteranProjectile.prefab";
         private const string TerrainPrefabPath = PrefabDir + "/Terrain.prefab";
         private const string ScenePath = SceneDir + "/DungeonWarfare.unity";
 
@@ -65,12 +67,14 @@ namespace DungeonWarfare.EditorTools
             LightningProjectile lightningProjectilePrefab = EnsureLightningProjectilePrefab();
             Tower lightningTowerPrefab = EnsureLightningTowerPrefab(square, lightningProjectilePrefab);
             Tower laserTowerPrefab = EnsureLaserTowerPrefab(square);
+            VeteranProjectile veteranProjectilePrefab = EnsureVeteranProjectilePrefab(circle);
+            Tower veteranTowerPrefab = EnsureVeteranTowerPrefab(square, veteranProjectilePrefab);
             Terrain terrainPrefab = EnsureTerrainPrefab(square);
             Enemy enemyPrefab = EnsureEnemyPrefab(circle, square);
 
             BuildScene(square, circle, enemyPrefab,
                        new[] { towerPrefab, bombTowerPrefab, injectionTowerPrefab, aimTowerPrefab,
-                               lightningTowerPrefab, laserTowerPrefab },
+                               lightningTowerPrefab, laserTowerPrefab, veteranTowerPrefab },
                        terrainPrefab);
 
             AssetDatabase.SaveAssets();
@@ -443,6 +447,55 @@ namespace DungeonWarfare.EditorTools
             SetFloat(tower, "damage", 6f); // base dps; ramps up via DebugTuning
 
             Tower asset = PrefabUtility.SaveAsPrefabAsset(go, LaserTowerPrefabPath).GetComponent<Tower>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static VeteranProjectile EnsureVeteranProjectilePrefab(Sprite circle)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("VeteranProjectile");
+            go.transform.localScale = new Vector3(0.18f, 0.18f, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = circle;
+            sr.color = new Color(1f, 0.85f, 0.35f); // gold round
+            sr.sortingOrder = 4;
+
+            go.AddComponent<VeteranProjectile>(); // credits the firing veteran on a last-hit
+
+            VeteranProjectile asset = PrefabUtility.SaveAsPrefabAsset(go, VeteranProjectilePrefabPath)
+                .GetComponent<VeteranProjectile>();
+            Object.DestroyImmediate(go);
+            return asset;
+        }
+
+        private static Tower EnsureVeteranTowerPrefab(Sprite square, Projectile projectilePrefab)
+        {
+            EnsureFolder(PrefabDir);
+
+            var go = new GameObject("VeteranTower");
+            go.transform.localScale = new Vector3(UnitSize, UnitSize, 1f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = square;
+            sr.color = new Color(0.6f, 0.55f, 0.35f); // drab → tints gold as it grows
+            sr.sortingOrder = 3;
+
+            var hitbox = go.AddComponent<BoxCollider2D>();
+            hitbox.size = new Vector2(1.1f, 1.1f);
+            hitbox.isTrigger = true;
+
+            Tower tower = go.AddComponent<VeteranTower>();
+            SetRef(tower, "projectilePrefab", projectilePrefab);
+            SetString(tower, "displayName", "老兵");
+            SetInt(tower, "cost", 50);
+            SetFloat(tower, "range", 4f);
+            SetFloat(tower, "fireInterval", 0.4f); // fast (A22 连发加速 branch)
+            SetFloat(tower, "damage", 5f);         // low base; grows per kill
+
+            Tower asset = PrefabUtility.SaveAsPrefabAsset(go, VeteranTowerPrefabPath).GetComponent<Tower>();
             Object.DestroyImmediate(go);
             return asset;
         }
